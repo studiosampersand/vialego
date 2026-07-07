@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-title" content="Vialego">
   <title>Vialego · v0.000.003</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192-v003b.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -22,6 +22,11 @@
       </div>
       <button id="installBtn" class="ghost small hidden">Installeer</button>
     </header>
+
+    <div id="updateBanner" class="update-banner hidden" role="status" aria-live="polite">
+      <div><strong>Nieuwe versie beschikbaar</strong><span>Herlaad Vialego om de update te installeren.</span></div>
+      <button id="applyUpdate" class="primary small" type="button">Nu updaten</button>
+    </div>
 
     <main>
       <section id="screen-dashboard" class="screen active">
