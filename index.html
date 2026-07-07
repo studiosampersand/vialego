@@ -1,149 +1,202 @@
 <!doctype html>
 <html lang="nl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#101418" />
-  <title>Vialego</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Vialego">
+  <title>Vialego · v0.000.002</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="app">
+  <div id="app" class="app-shell">
     <header class="topbar">
       <div>
-        <p class="eyebrow" id="todayLabel">Vandaag</p>
+        <p class="eyebrow">v0.000.002</p>
         <h1>Vialego</h1>
       </div>
-      <button class="ghost" id="setupBtn" aria-label="Instellingen">⚙︎</button>
+      <button id="installBtn" class="ghost small hidden">Installeer</button>
     </header>
 
     <main>
-      <section id="setupPanel" class="panel hidden">
-        <h2>Setup</h2>
-        <p class="meta">Eerste configuratie. Alles blijft lokaal op dit toestel.</p>
-        <div class="donation-card">
-          <strong>Freeware</strong>
-          <p>Vialego is gratis. Wil je de ontwikkelaar steunen? Dan kan dat later via PayPal / Buy me a coffee.</p>
-          <a class="button secondary" href="https://www.paypal.com/paypalme/" target="_blank" rel="noreferrer">☕ Doneer</a>
+      <section id="screen-dashboard" class="screen active">
+        <div class="hero card">
+          <p id="greeting" class="muted">Welkom terug</p>
+          <h2 id="streakText">Nog niets gelogd vandaag.</h2>
+          <p id="motivation" class="muted">Log je fiets, trein, bus, auto, motor, thuiswerk of bonnetje in enkele seconden.</p>
+          <div class="hero-actions">
+            <button class="primary quick" data-action="commute" data-mode="Motorfiets">🏍 Motor naar werk</button>
+            <button class="secondary quick" data-action="workhome">🏠 Thuis gewerkt</button>
+          </div>
         </div>
-        <form id="settingsForm" class="grid-form">
-          <label>Naam<input id="userName" placeholder="Sam" /></label>
-          <label>Taal
-            <select id="language">
-              <option value="nl">Nederlands</option><option value="en">English</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option><option value="it">Italiano</option><option value="pl">Polski</option><option value="sv">Svenska</option><option value="no">Norsk</option><option value="ch">Swiss</option>
+
+        <div class="month-switch card slim">
+          <button id="prevMonth" class="ghost">‹</button>
+          <strong id="currentMonthLabel"></strong>
+          <button id="nextMonth" class="ghost">›</button>
+        </div>
+
+        <section class="grid stats-grid">
+          <div class="stat card"><span>Ritten</span><strong id="statTrips">0</strong></div>
+          <div class="stat card"><span id="statDistanceLabel">Km</span><strong id="statKm">0</strong></div>
+          <div class="stat card"><span>Kosten</span><strong id="statCost">€0</strong></div>
+          <div class="stat card"><span>Bonnetjes</span><strong id="statReceipts">0</strong></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head"><h3>Vandaag snel loggen</h3></div>
+          <div class="quick-grid">
+            <button class="quick-tile quick" data-action="commute" data-mode="Fiets">🚲<span>Fiets</span></button>
+            <button class="quick-tile quick" data-action="commute" data-mode="Trein">🚆<span>Trein</span></button>
+            <button class="quick-tile quick" data-action="commute" data-mode="Bus">🚌<span>Bus</span></button>
+            <button class="quick-tile quick" data-action="commute" data-mode="Auto">🚗<span>Auto</span></button>
+            <button class="quick-tile quick" data-action="commute" data-mode="Motorfiets">🏍<span>Motor</span></button>
+            <button class="quick-tile" id="openTripForm">➕<span>Rit</span></button>
+            <button class="quick-tile" id="openExpenseForm">🧾<span>Kost / bon</span></button>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head"><h3>Laatste logs</h3><button id="viewAllLogs" class="ghost small">Alles</button></div>
+          <div id="recentList" class="list empty-state">Nog geen logs.</div>
+        </section>
+      </section>
+
+      <section id="screen-log" class="screen">
+        <div class="tabs card slim">
+          <button class="tab active" data-tab="trip">Rit</button>
+          <button class="tab" data-tab="expense">Kost / bon</button>
+        </div>
+
+        <form id="tripForm" class="card form active-form">
+          <h2>Rit toevoegen</h2>
+          <label>Datum <input type="date" id="tripDate" required></label>
+          <label>Vervoer
+            <select id="tripMode">
+              <option>Fiets</option><option>Trein</option><option>Bus</option><option>Auto</option><option>Motorfiets</option><option>Te voet</option><option>Anders</option>
             </select>
           </label>
-          <label>Afstand
-            <select id="distanceUnit"><option value="km">Kilometer</option><option value="mi">Miles</option></select>
+          <div class="route-row">
+            <label>Van
+              <select id="tripFromPreset"></select>
+              <input id="tripFromOther" class="hidden" placeholder="Ander vertrekpunt">
+            </label>
+            <button id="swapRoute" type="button" class="swap-btn" aria-label="Wissel van en naar">⇄</button>
+            <label>Naar
+              <select id="tripToPreset"></select>
+              <input id="tripToOther" class="hidden" placeholder="Andere bestemming">
+            </label>
+          </div>
+          <label><span id="tripDistanceLabel">Kilometers</span> <input type="number" min="0" step="0.1" id="tripKm" placeholder="0"></label>
+          <label>Type
+            <select id="tripPurpose"><option>Woon-werk</option><option>Professioneel</option><option>Privé</option><option>Recreatief</option><option>Thuiswerk</option></select>
           </label>
-          <label>Valuta
-            <select id="currency"><option value="EUR">Euro (€)</option><option value="GBP">British pound (£)</option><option value="SEK">Swedish krona (SEK)</option><option value="NOK">Norwegian krone (NOK)</option></select>
+          <label>Notitie <textarea id="tripNotes" rows="3" placeholder="Optioneel"></textarea></label>
+          <button class="primary" type="submit">Rit opslaan</button>
+        </form>
+
+        <form id="expenseForm" class="card form">
+          <h2>Kost / bonnetje</h2>
+          <label>Datum <input type="date" id="expenseDate" required></label>
+          <label>Categorie
+            <select id="expenseCategory"><option>Brandstof</option><option>Parking</option><option>Trein</option><option>Bus/tram/metro</option><option>Boete</option><option>Onderhoud</option><option>Reparatiekosten</option><option>Motorkledij</option><option>Uitrusting</option><option>Verzekering</option><option>Belasting</option><option>Anders</option></select>
           </label>
-          <label>Thuis 1<input id="home1" placeholder="Thuis" /></label>
-          <label>Thuis 2<input id="home2" placeholder="Partner / tweede adres" /></label>
-          <label>Thuis 3<input id="home3" placeholder="Optioneel" /></label>
-          <label>Werkadres<input id="workAddress" placeholder="Werk" /></label>
-          <button class="button" type="submit">Setup opslaan</button>
+          <label>Vervoer
+            <select id="expenseMode"><option>Fiets</option><option>Trein</option><option>Bus</option><option>Auto</option><option>Motorfiets</option><option>OV</option><option>Anders</option></select>
+          </label>
+          <label>Bedrag <input type="number" min="0" step="0.01" id="expenseAmount" placeholder="0.00" required></label>
+          <label>Type
+            <select id="expensePurpose"><option>Woon-werk</option><option>Professioneel</option><option>Privé</option><option>Recreatief</option></select>
+          </label>
+          <label>Bonnetje/foto <input type="file" id="receiptFile" accept="image/*" capture="environment"></label>
+          <img id="receiptPreview" class="receipt-preview hidden" alt="Voorbeeld bonnetje">
+          <label>Notitie <textarea id="expenseNotes" rows="3" placeholder="Optioneel"></textarea></label>
+          <button class="primary" type="submit">Kost opslaan</button>
         </form>
       </section>
 
-      <section class="hero-card">
-        <div>
-          <p class="eyebrow">Goed bezig</p>
-          <h2 id="streakText">0 dagen gelogd</h2>
-          <p id="encourageText">Log vandaag om je transportdossier te starten.</p>
+      <section id="screen-report" class="screen">
+        <div class="card">
+          <h2>Maandoverzicht</h2>
+          <p class="muted">Bekijk, print als PDF of mail jezelf een samenvatting. Bonnetjes worden mee opgenomen in de print/PDF.</p>
+          <div class="hero-actions"><button id="printReport" class="primary">Print / PDF</button><button id="emailReport" class="secondary">Mail samenvatting</button></div>
         </div>
-        <div class="hero-number" id="monthKm">0 km</div>
+        <article id="reportContent" class="report card"></article>
       </section>
 
-      <section class="quick-panel">
-        <div class="section-head"><h2>Rit toevoegen</h2><button class="small" id="addTripBtn">+ Custom</button></div>
-        <div class="mode-grid" id="modeGrid"></div>
+      <section id="screen-achievements" class="screen">
+        <div class="card">
+          <h2>Stats</h2>
+          <p class="muted">Geen badges, wel nuttige inzichten over je vervoer, kosten, bonnetjes en geschatte besparing.</p>
+        </div>
+        <div id="statsPanel"></div>
       </section>
 
-      <section class="panel">
-        <div class="section-head"><h2>Voertuigen/profielen</h2><button class="small" id="addVehicleBtn">+ Toevoegen</button></div>
-        <div id="vehiclesList" class="cards"></div>
-      </section>
+      <section id="screen-settings" class="screen">
+        <div class="card donate-card">
+          <h3>Freeware</h3>
+          <p class="muted">Vialego is freeware. Wil je de ontwikkelaar steunen, dan kan dat via een donatie.</p>
+          <a class="secondary donate-link" href="https://www.buymeacoffee.com/" target="_blank" rel="noopener">Buy me a coffee</a>
+        </div>
 
-      <section class="panel">
-        <div class="section-head"><h2>Deze maand</h2><button class="small" id="reportBtn">Rapport</button></div>
-        <div class="stats-grid" id="statsGrid"></div>
-      </section>
+        <form id="settingsForm" class="card form active-form">
+          <h2>Setup</h2>
+          <label>Naam <input id="settingName" placeholder="Sam"></label>
+          <div class="two-col">
+            <label>Taal
+              <select id="settingLanguage"><option value="nl">Nederlands</option><option value="fr">Frans</option><option value="en">Engels</option><option value="de">Duits</option><option value="es">Spaans</option><option value="it">Italiaans</option><option value="pl">Pools</option><option value="sv">Zweeds</option><option value="no">Noors</option><option value="ch">Zwitsers</option></select>
+            </label>
+            <label>Afstand
+              <select id="settingDistanceUnit"><option value="km">Kilometer</option><option value="mi">Miles</option></select>
+            </label>
+          </div>
+          <label>Valuta
+            <select id="settingCurrency"><option value="€">Euro (€)</option><option value="£">Britse pond (£)</option><option value="kr">Zweedse kroon (kr)</option><option value="NOK">Noorse kroon (NOK)</option></select>
+          </label>
+          <label>Standaard afstand woon-werk <input id="settingDistance" type="number" min="0" step="0.1"></label>
+          <label>Thuis 1 <input id="settingHome1" placeholder="Thuis"></label>
+          <label>Thuis 2 <input id="settingHome2" placeholder="Optioneel"></label>
+          <label>Thuis 3 <input id="settingHome3" placeholder="Optioneel"></label>
+          <label>Werk <input id="settingWork" placeholder="Werk"></label>
+          <label>Standaard vervoer
+            <select id="settingMode"><option>Fiets</option><option>Trein</option><option>Bus</option><option>Auto</option><option>Motorfiets</option></select>
+          </label>
+          <button class="primary" type="submit">Setup opslaan</button>
+        </form>
 
-      <section class="panel">
-        <h2>Voertuigmix</h2>
-        <p class="meta">Verdeling op basis van kilometers deze maand.</p>
-        <div id="vehicleMix" class="bars"></div>
-      </section>
+        <div class="card">
+          <h3>Backup</h3>
+          <p class="muted">Alles blijft lokaal op dit toestel. Maak regelmatig een backup.</p>
+          <div class="hero-actions wrap"><button id="exportJson" class="secondary">Export JSON</button><label class="secondary file-label">Import JSON<input id="importJson" type="file" accept="application/json"></label><button id="clearData" class="danger">Reset</button></div>
+        </div>
 
-      <section class="panel">
-        <div class="section-head"><h2>Stats</h2><button class="small" id="backupBtn">Backup</button></div>
-        <div id="smartStats" class="cards"></div>
-      </section>
+        <div class="card">
+          <h3>Updates</h3>
+          <p class="muted">De app controleert automatisch op een nieuwe service worker. Web push notificaties na GitHub push vragen nog Firebase-configuratie.</p>
+          <button id="checkUpdates" class="secondary">Check update</button>
+        </div>
 
-      <section class="panel">
-        <div class="section-head"><h2>Ritten</h2><button class="small" id="clearSampleBtn">Sample wissen</button></div>
-        <div id="tripList" class="list"></div>
-      </section>
-
-      <section class="panel">
-        <div class="section-head"><h2>Kosten & bonnetjes</h2><button class="small" id="addExpenseBtn">+ Kost</button></div>
-        <div id="expenseList" class="list"></div>
+        <div class="card">
+          <h3>Privacy</h3>
+          <p class="muted">Alle data blijft op dit toestel. Niets wordt geüpload. Rapporten worden lokaal gegenereerd.</p>
+        </div>
       </section>
     </main>
+
+    <nav class="bottom-nav">
+      <button class="nav active" data-screen="dashboard">⌂<span>Home</span></button>
+      <button class="nav" data-screen="log">＋<span>Log</span></button>
+      <button class="nav" data-screen="report">▣<span>Rapport</span></button>
+      <button class="nav" data-screen="achievements">◆<span>Stats</span></button>
+      <button class="nav" data-screen="settings">⚙<span>Setup</span></button>
+    </nav>
   </div>
-
-  <dialog id="vehicleDialog"><form method="dialog" id="vehicleForm" class="dialog-form">
-    <h2>Voertuig/profiel toevoegen</h2>
-    <label>Naam<input id="vehicleName" required placeholder="Privé moto" /></label>
-    <label>Type<select id="vehicleMode"></select></label>
-    <label>Gebruik<select id="vehicleUse"><option>Woon-werk</option><option>Privé</option><option>Professioneel</option><option>Gemengd</option></select></label>
-    <label>Standaard van<input id="vehicleFrom" placeholder="Thuis 1" /></label>
-    <label>Standaard naar<input id="vehicleTo" placeholder="Werk" /></label>
-    <label>Standaard afstand<input id="vehicleDistance" type="number" min="0" step="0.1" /></label>
-    <menu><button value="cancel" class="ghost">Annuleer</button><button class="button" value="default">Opslaan</button></menu>
-  </form></dialog>
-
-  <dialog id="tripDialog"><form method="dialog" id="tripForm" class="dialog-form">
-    <h2>Rit toevoegen</h2>
-    <label>Datum<input id="tripDate" type="date" required /></label>
-    <label>Voertuig/profiel<select id="tripVehicle"></select></label>
-    <label>Type vervoer<select id="tripMode"></select></label>
-    <label>Gebruik<select id="tripUse"><option>Woon-werk</option><option>Privé</option><option>Professioneel</option><option>Gemengd</option></select></label>
-    <div class="route-row">
-      <label>Van<select id="tripFromPreset"></select><input id="tripFrom" placeholder="Adres of locatie" /></label>
-      <button type="button" class="swap" id="swapRouteBtn" title="Van/naar wisselen">⇄</button>
-      <label>Naar<select id="tripToPreset"></select><input id="tripTo" placeholder="Adres of locatie" /></label>
-    </div>
-    <label>Afstand<input id="tripDistance" type="number" min="0" step="0.1" required /></label>
-    <label>Notitie<textarea id="tripNote"></textarea></label>
-    <menu><button value="cancel" class="ghost">Annuleer</button><button class="button" value="default">Rit opslaan</button></menu>
-  </form></dialog>
-
-  <dialog id="expenseDialog"><form method="dialog" id="expenseForm" class="dialog-form">
-    <h2>Kost toevoegen</h2>
-    <label>Datum<input id="expenseDate" type="date" required /></label>
-    <label>Voertuig/profiel<select id="expenseVehicle"></select></label>
-    <label>Categorie<select id="expenseCategory"></select></label>
-    <label>Gebruik<select id="expenseUse"><option>Woon-werk</option><option>Privé</option><option>Professioneel</option><option>Gemengd</option></select></label>
-    <label>Bedrag<input id="expenseAmount" type="number" min="0" step="0.01" required /></label>
-    <label>Bonnetje/foto<input id="expenseReceipt" type="file" accept="image/*" /></label>
-    <label>Notitie<textarea id="expenseNote"></textarea></label>
-    <menu><button value="cancel" class="ghost">Annuleer</button><button class="button" value="default">Kost opslaan</button></menu>
-  </form></dialog>
-
-  <dialog id="reportDialog" class="report-dialog"><div class="dialog-form">
-    <h2>Maandrapport</h2>
-    <label>Maand<input id="reportMonth" type="month" /></label>
-    <div class="button-row"><button class="button" id="printReportBtn">Print / lokaal PDF opslaan</button><button class="button secondary" id="mailReportBtn">Mail samenvatting</button></div>
-    <p class="meta">Tip: bonnetjes staan in de print/PDF-preview. Mailto kan geen bijlagen automatisch meesturen zonder mailserver.</p>
-    <div id="reportPreview" class="report-preview"></div>
-    <button class="ghost full" id="closeReportBtn">Sluiten</button>
-  </div></dialog>
-
+  <div id="toast" class="toast hidden"></div>
   <script src="app.js"></script>
 </body>
 </html>
