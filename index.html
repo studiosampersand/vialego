@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Vialego">
-  <title>Vialego · v0.000.002</title>
+  <title>Vialego · v0.000.003</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="styles.css">
@@ -17,7 +17,7 @@
   <div id="app" class="app-shell">
     <header class="topbar">
       <div>
-        <p class="eyebrow">v0.000.002</p>
+        <p class="eyebrow">v0.000.003</p>
         <h1>Vialego</h1>
       </div>
       <button id="installBtn" class="ghost small hidden">Installeer</button>
@@ -30,7 +30,7 @@
           <h2 id="streakText">Nog niets gelogd vandaag.</h2>
           <p id="motivation" class="muted">Log je fiets, trein, bus, auto, motor, thuiswerk of bonnetje in enkele seconden.</p>
           <div class="hero-actions">
-            <button class="primary quick" data-action="commute" data-mode="Motorfiets">🏍 Motor naar werk</button>
+            <button id="heroCommuteButton" class="primary quick" data-action="commute" data-mode="Motorfiets">🏍 Motor naar werk</button>
             <button class="secondary quick" data-action="workhome">🏠 Thuis gewerkt</button>
           </div>
         </div>
@@ -50,6 +50,10 @@
 
         <section class="card">
           <div class="section-head"><h3>Vandaag snel loggen</h3></div>
+          <div class="commute-toggle" role="group" aria-label="Richting woon-werk">
+            <button id="quickToWork" type="button" class="commute-option active">Woon → Werk</button>
+            <button id="quickToHome" type="button" class="commute-option">Werk → Woon</button>
+          </div>
           <div class="quick-grid">
             <button class="quick-tile quick" data-action="commute" data-mode="Fiets">🚲<span>Fiets</span></button>
             <button class="quick-tile quick" data-action="commute" data-mode="Trein">🚆<span>Trein</span></button>
@@ -93,11 +97,20 @@
             </label>
           </div>
           <label><span id="tripDistanceLabel">Kilometers</span> <input type="number" min="0" step="0.1" id="tripKm" placeholder="0"></label>
+          <div class="route-calc-row"><button id="calculateRoute" type="button" class="secondary">Bereken kortste route</button><span id="routeCalcStatus" class="muted small-text">Kies vertrek, bestemming en vervoer.</span></div>
           <label>Type
             <select id="tripPurpose"><option>Woon-werk</option><option>Professioneel</option><option>Privé</option><option>Recreatief</option><option>Thuiswerk</option></select>
           </label>
+          <div>
+            <span class="field-label">Ticket / bewijs</span>
+            <div class="file-actions">
+              <label class="secondary file-label">Kies bestand<input type="file" id="tripReceiptFile" accept="image/*"></label>
+              <label class="secondary file-label">Neem foto<input type="file" id="tripReceiptCamera" accept="image/*" capture="environment"></label>
+            </div>
+            <img id="tripReceiptPreview" class="receipt-preview hidden" alt="Voorbeeld ticket of bewijs">
+          </div>
           <label>Notitie <textarea id="tripNotes" rows="3" placeholder="Optioneel"></textarea></label>
-          <button class="primary" type="submit">Rit opslaan</button>
+          <button id="tripSubmitButton" class="primary" type="submit">Rit opslaan</button>
         </form>
 
         <form id="expenseForm" class="card form">
@@ -113,18 +126,38 @@
           <label>Type
             <select id="expensePurpose"><option>Woon-werk</option><option>Professioneel</option><option>Privé</option><option>Recreatief</option></select>
           </label>
-          <label>Bonnetje/foto <input type="file" id="receiptFile" accept="image/*" capture="environment"></label>
-          <img id="receiptPreview" class="receipt-preview hidden" alt="Voorbeeld bonnetje">
+          <div>
+            <span class="field-label">Bonnetje / foto</span>
+            <div class="file-actions">
+              <label class="secondary file-label">Kies bestand<input type="file" id="receiptFile" accept="image/*"></label>
+              <label class="secondary file-label">Neem foto<input type="file" id="receiptCamera" accept="image/*" capture="environment"></label>
+            </div>
+            <img id="receiptPreview" class="receipt-preview hidden" alt="Voorbeeld bonnetje">
+          </div>
           <label>Notitie <textarea id="expenseNotes" rows="3" placeholder="Optioneel"></textarea></label>
-          <button class="primary" type="submit">Kost opslaan</button>
+          <button id="expenseSubmitButton" class="primary" type="submit">Kost opslaan</button>
         </form>
+      </section>
+
+
+      <section id="screen-calendar" class="screen">
+        <div class="card">
+          <div class="section-head"><h2>Alle registraties</h2><button id="closeCalendar" class="ghost small">Terug</button></div>
+          <div class="month-switch slim"><button id="calendarPrev" class="ghost">‹</button><strong id="calendarMonthLabel"></strong><button id="calendarNext" class="ghost">›</button></div>
+          <div class="calendar-weekdays"><span>Ma</span><span>Di</span><span>Wo</span><span>Do</span><span>Vr</span><span>Za</span><span>Zo</span></div>
+          <div id="calendarGrid" class="calendar-grid"></div>
+        </div>
+        <div class="card">
+          <h3 id="calendarDayTitle">Registraties</h3>
+          <div id="calendarDayList" class="list empty-state">Kies een dag.</div>
+        </div>
       </section>
 
       <section id="screen-report" class="screen">
         <div class="card">
           <h2>Maandoverzicht</h2>
           <p class="muted">Bekijk, print als PDF of mail jezelf een samenvatting. Bonnetjes worden mee opgenomen in de print/PDF.</p>
-          <div class="hero-actions"><button id="printReport" class="primary">Print / PDF</button><button id="emailReport" class="secondary">Mail samenvatting</button></div>
+          <div class="hero-actions"><button id="printReport" class="primary">Print / PDF</button><button id="emailReport" class="secondary">Mail / deel incl. bonnetjes</button></div>
         </div>
         <article id="reportContent" class="report card"></article>
       </section>
@@ -140,8 +173,8 @@
       <section id="screen-settings" class="screen">
         <div class="card donate-card">
           <h3>Freeware</h3>
-          <p class="muted">Vialego is freeware. Wil je de ontwikkelaar steunen, dan kan dat via een donatie.</p>
-          <a class="secondary donate-link" href="https://www.buymeacoffee.com/" target="_blank" rel="noopener">Buy me a coffee</a>
+          <p class="muted">Vialego is freeware. Wil je de ontwikkelaar steunen, dan kan dat via een donatie.</p><p class="muted"><strong>Belangrijk:</strong> alle gegevens worden lokaal op je toestel bewaard. Studio Sampersand is niet verantwoordelijk voor dataverlies, foutieve routeberekeningen of andere ongemakken. Maak regelmatig een backup.</p>
+          <div class="hero-actions"><a class="secondary donate-link" href="https://www.buymeacoffee.com/" target="_blank" rel="noopener">Buy me a coffee</a><a class="secondary donate-link" href="mailto:studiosampersand@gmail.com?subject=Vialego%20idee">Stuur een idee</a></div>
         </div>
 
         <form id="settingsForm" class="card form active-form">
@@ -159,10 +192,19 @@
             <select id="settingCurrency"><option value="€">Euro (€)</option><option value="£">Britse pond (£)</option><option value="kr">Zweedse kroon (kr)</option><option value="NOK">Noorse kroon (NOK)</option></select>
           </label>
           <label>Standaard afstand woon-werk <input id="settingDistance" type="number" min="0" step="0.1"></label>
-          <label>Thuis 1 <input id="settingHome1" placeholder="Thuis"></label>
-          <label>Thuis 2 <input id="settingHome2" placeholder="Optioneel"></label>
-          <label>Thuis 3 <input id="settingHome3" placeholder="Optioneel"></label>
-          <label>Werk <input id="settingWork" placeholder="Werk"></label>
+          <label>Thuis 1
+            <span class="address-field"><input id="settingHome1" class="address-search" placeholder="Vul je thuisadres hier in" autocomplete="off" aria-autocomplete="list" aria-expanded="false"><span class="address-results hidden" role="listbox"></span></span>
+          </label>
+          <label>Thuis 2
+            <span class="address-field"><input id="settingHome2" class="address-search" placeholder="Vul een tweede thuisadres in" autocomplete="off" aria-autocomplete="list" aria-expanded="false"><span class="address-results hidden" role="listbox"></span></span>
+          </label>
+          <label>Thuis 3
+            <span class="address-field"><input id="settingHome3" class="address-search" placeholder="Vul een derde thuisadres in" autocomplete="off" aria-autocomplete="list" aria-expanded="false"><span class="address-results hidden" role="listbox"></span></span>
+          </label>
+          <label>Werk
+            <span class="address-field"><input id="settingWork" class="address-search" placeholder="Vul je werkadres hier in" autocomplete="off" aria-autocomplete="list" aria-expanded="false"><span class="address-results hidden" role="listbox"></span></span>
+          </label>
+          <p class="address-help">Typ minstens 3 tekens en kies een volledig adres uit de suggesties. Je kunt ook zelf een adres invullen.</p>
           <label>Standaard vervoer
             <select id="settingMode"><option>Fiets</option><option>Trein</option><option>Bus</option><option>Auto</option><option>Motorfiets</option></select>
           </label>
@@ -171,13 +213,13 @@
 
         <div class="card">
           <h3>Backup</h3>
-          <p class="muted">Alles blijft lokaal op dit toestel. Maak regelmatig een backup.</p>
+          <p class="muted">Alles blijft lokaal op dit toestel. Maak regelmatig een backup. Verwijderen van de app of browsergegevens kan je registraties en bonnetjes wissen.</p><p id="lastBackupText" class="muted">Laatste backup: nog niet gemaakt.</p>
           <div class="hero-actions wrap"><button id="exportJson" class="secondary">Export JSON</button><label class="secondary file-label">Import JSON<input id="importJson" type="file" accept="application/json"></label><button id="clearData" class="danger">Reset</button></div>
         </div>
 
         <div class="card">
           <h3>Updates</h3>
-          <p class="muted">De app controleert automatisch op een nieuwe service worker. Web push notificaties na GitHub push vragen nog Firebase-configuratie.</p>
+          <p class="muted">De app controleert automatisch op een nieuwe service worker. Automatische app-updates zijn actief. Pushmeldingen na een GitHub-push kunnen worden gekoppeld zodra Firebase-projectgegevens zijn ingevuld.</p>
           <button id="checkUpdates" class="secondary">Check update</button>
         </div>
 
