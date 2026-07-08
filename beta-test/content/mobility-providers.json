@@ -1,0 +1,45 @@
+[
+  {
+    "country": "BE",
+    "name": "SNCB/NMBS",
+    "website": "https://www.belgiantrain.be/",
+    "appUrl": "https://www.belgiantrain.be/en/travel-info/prepare-for-your-journey/use-the-sncb-app"
+  },
+  {
+    "country": "BE",
+    "name": "De Lijn",
+    "website": "https://www.delijn.be/",
+    "appUrl": "https://www.delijn.be/en/content/ontdek-de-app/"
+  },
+  {
+    "country": "BE",
+    "name": "STIB/MIVB",
+    "website": "https://www.stib-mivb.be/",
+    "appUrl": "https://www.stib-mivb.be/buy/get-moving-with-the-stib-mivb-app"
+  },
+  {
+    "country": "BE",
+    "name": "TEC",
+    "website": "https://www.letec.be/"
+  },
+  {
+    "country": "NL",
+    "name": "NS",
+    "website": "https://www.ns.nl/"
+  },
+  {
+    "country": "FR",
+    "name": "SNCF Connect",
+    "website": "https://www.sncf-connect.com/"
+  },
+  {
+    "country": "DE",
+    "name": "Deutsche Bahn",
+    "website": "https://www.bahn.de/"
+  },
+  {
+    "country": "CH",
+    "name": "SBB CFF FFS",
+    "website": "https://www.sbb.ch/"
+  }
+]
