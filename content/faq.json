@@ -12,6 +12,114 @@
     }
   },
   {
+    "id": "belgian-made",
+    "category": "about",
+    "question": {
+      "en": "Is MoBud Belgian-made?",
+      "nl": "Is MoBud Belgisch gemaakt?"
+    },
+    "answer": {
+      "en": "Yes. MoBud is an independent Belgian-made freeware project by Studio Sampersand. The app is designed and maintained in Belgium, with a strong focus on practical mobility administration, privacy, user-owned data and clear reporting.",
+      "nl": "Ja. MoBud is een onafhankelijk Belgisch freewareproject van Studio Sampersand. De app wordt in België ontworpen en onderhouden, met een sterke focus op praktische mobiliteitsadministratie, privacy, data-eigenaarschap en duidelijke rapportering."
+    }
+  },
+  {
+    "id": "no-central-server",
+    "category": "privacy",
+    "question": {
+      "en": "Does MoBud use a central server for my personal data?",
+      "nl": "Gebruikt MoBud een centrale server voor mijn persoonlijke gegevens?"
+    },
+    "answer": {
+      "en": "No. Trips, addresses, vehicles, receipts, photos and settings remain on the user’s device by default. Optional Google Drive backup is stored in the user’s own Google account. The Cloudflare service is only used for limited functions such as routing and sending support requests, not for storing mobility records.",
+      "nl": "Nee. Ritten, adressen, voertuigen, bonnetjes, foto’s en instellingen blijven standaard op het toestel van de gebruiker. Een optionele Google Drive-back-up wordt opgeslagen in het eigen Google-account van de gebruiker. De Cloudflare-dienst wordt alleen gebruikt voor beperkte functies zoals routeberekening en het verzenden van supportmeldingen, niet voor het bewaren van mobiliteitsgegevens."
+    }
+  },
+  {
+    "id": "drive",
+    "category": "backup",
+    "question": {
+      "en": "Why does MoBud ask for access to Google Drive?",
+      "nl": "Waarom vraagt MoBud toegang tot Google Drive?"
+    },
+    "answer": {
+      "en": "Google requires permission before MoBud can store or restore a backup in your own Google account. MoBud uses the limited drive.appdata permission, which only allows access to MoBud's own hidden app-data area. It does not grant general access to your other Drive files, folders, photos or documents. Your Google password is never shared with MoBud.",
+      "nl": "Google vereist toestemming voordat MoBud een back-up in je eigen Google-account kan opslaan of herstellen. MoBud gebruikt de beperkte toestemming drive.appdata, die alleen toegang geeft tot de eigen verborgen app-data van MoBud. Dit geeft geen algemene toegang tot je andere Drive-bestanden, mappen, foto's of documenten. Je Google-wachtwoord wordt nooit met MoBud gedeeld."
+    }
+  },
+  {
+    "id": "drive-how",
+    "category": "backup",
+    "question": {
+      "en": "How does Google Drive backup work?",
+      "nl": "Hoe werkt Google Drive-back-up?"
+    },
+    "answer": {
+      "en": "After you link your Google account, MoBud can upload or restore its backup in the hidden app-data area of that same account. The backup remains associated with the user’s own Drive. It is not stored in Studio Sampersand’s Drive or on a central MoBud server.",
+      "nl": "Na het koppelen van je Google-account kan MoBud zijn back-up uploaden of herstellen in de verborgen app-data van datzelfde account. De back-up blijft gekoppeld aan de eigen Drive van de gebruiker. Ze wordt niet opgeslagen in de Drive van Studio Sampersand of op een centrale MoBud-server."
+    }
+  },
+  {
+    "id": "drive-owner",
+    "category": "privacy",
+    "question": {
+      "en": "Where is my Google Drive backup stored?",
+      "nl": "Waar wordt mijn Google Drive-back-up opgeslagen?"
+    },
+    "answer": {
+      "en": "The backup is stored in the Google Drive account selected by you. It is not stored in Studio Sampersand's Drive and is not copied to a central MoBud server. Storage usage counts against the selected user's own Google Drive quota.",
+      "nl": "De back-up wordt opgeslagen in het Google Drive-account dat je zelf kiest. Ze wordt niet opgeslagen in de Drive van Studio Sampersand en niet gekopieerd naar een centrale MoBud-server. Het opslaggebruik telt mee voor de eigen Google Drive-opslag van de gekozen gebruiker."
+    }
+  },
+  {
+    "id": "drive-visibility",
+    "category": "privacy",
+    "question": {
+      "en": "Can MoBud or Studio Sampersand view my other Google Drive files?",
+      "nl": "Kan MoBud of Studio Sampersand mijn andere Google Drive-bestanden bekijken?"
+    },
+    "answer": {
+      "en": "No, not with the selected drive.appdata permission. MoBud can only manage its own hidden app-data area in the Google account you connect. Studio Sampersand does not receive a copy of your backup and has no dashboard or server access to your trips, vehicles, receipts, photos or Drive content.",
+      "nl": "Nee, niet met de gekozen toestemming drive.appdata. MoBud kan alleen de eigen verborgen app-data in het gekoppelde Google-account beheren. Studio Sampersand ontvangt geen kopie van je back-up en heeft geen dashboard- of servertoegang tot je ritten, voertuigen, bonnetjes, foto’s of Drive-inhoud."
+    }
+  },
+  {
+    "id": "drive-security",
+    "category": "privacy",
+    "question": {
+      "en": "Is my Google Drive backup encrypted and completely risk-free?",
+      "nl": "Is mijn Google Drive-back-up versleuteld en volledig zonder risico?"
+    },
+    "answer": {
+      "en": "Google states that Drive data is encrypted during transfer and while stored on Google's systems. MoBud does not currently add separate end-to-end encryption to the backup file. No online service can guarantee absolute security, so keep your Google account protected, use two-step verification where possible and retain a separate local JSON backup for important records.",
+      "nl": "Google vermeldt dat Drive-gegevens worden versleuteld tijdens de overdracht en wanneer ze op de systemen van Google zijn opgeslagen. MoBud voegt momenteel geen aparte end-to-endversleuteling toe aan het back-upbestand. Geen enkele online dienst kan absolute veiligheid garanderen. Beveilig daarom je Google-account, gebruik waar mogelijk tweestapsverificatie en bewaar voor belangrijke gegevens ook een aparte lokale JSON-back-up."
+    }
+  },
+  {
+    "id": "drive-revoke",
+    "category": "privacy",
+    "question": {
+      "en": "Can I disconnect Google Drive or withdraw permission?",
+      "nl": "Kan ik Google Drive loskoppelen of de toestemming intrekken?"
+    },
+    "answer": {
+      "en": "Yes. You can disconnect Google Drive in MoBud and withdraw the app's access through your Google Account security settings. Disconnecting does not automatically erase your local MoBud data. Existing backup files may remain in your Google account until you delete them or Google removes the app-data after access is revoked.",
+      "nl": "Ja. Je kunt Google Drive in MoBud loskoppelen en de toegang van de app intrekken via de beveiligingsinstellingen van je Google-account. Loskoppelen wist je lokale MoBud-gegevens niet automatisch. Bestaande back-upbestanden kunnen in je Google-account blijven staan totdat je ze verwijdert of Google de app-data na het intrekken van de toegang verwijdert."
+    }
+  },
+  {
+    "id": "local-security",
+    "category": "privacy",
+    "question": {
+      "en": "How is locally stored MoBud data protected?",
+      "nl": "Hoe worden lokaal opgeslagen MoBud-gegevens beschermd?"
+    },
+    "answer": {
+      "en": "Local MoBud data remains in your browser storage on the device. Access therefore depends on the security of your device, operating system, browser profile and screen lock. MoBud does not currently apply a separate password or end-to-end encryption layer to local browser storage. Clearing site data, resetting the browser or losing the device can remove local records, so make regular backups.",
+      "nl": "Lokale MoBud-gegevens blijven in de browseropslag op je toestel. De bescherming hangt daardoor af van de beveiliging van je toestel, besturingssysteem, browserprofiel en schermvergrendeling. MoBud past momenteel geen apart wachtwoord of eigen end-to-endversleuteling toe op de lokale browseropslag. Het wissen van sitegegevens, het resetten van de browser of verlies van het toestel kan lokale registraties verwijderen. Maak daarom regelmatig back-ups."
+    }
+  },
+  {
     "id": "backup-json",
     "category": "backup",
     "question": {
@@ -25,27 +133,52 @@
     "tutorial": "backup"
   },
   {
-    "id": "drive",
-    "category": "backup",
+    "id": "how-backup-restore",
+    "category": "tutorials",
     "question": {
-      "en": "What does Google Drive backup do?",
-      "nl": "Wat doet Google Drive-back-up?"
+      "en": "How do I back up or restore MoBud?",
+      "nl": "Hoe maak of herstel ik een MoBud-back-up?"
     },
     "answer": {
-      "en": "It stores MoBud's backup in your own Google Drive app-data area. Studio Sampersand cannot see those files. Google's terms and limits apply.",
-      "nl": "De back-up wordt opgeslagen in de app-data van je eigen Google Drive. Studio Sampersand kan die bestanden niet zien. De voorwaarden en limieten van Google zijn van toepassing."
+      "en": "Use Export backup in Reports to download a JSON file. Use Import backup to restore it. Export before major updates or before clearing browser data.",
+      "nl": "Gebruik Back-up exporteren in Rapporten om een JSON-bestand te downloaden. Gebruik Back-up importeren om het te herstellen. Exporteer vóór grote updates of vóór je browsergegevens wist."
+    },
+    "tutorial": "backup-export"
+  },
+  {
+    "id": "updates-backup",
+    "category": "backup",
+    "question": {
+      "en": "What happens to my data when MoBud updates?",
+      "nl": "Wat gebeurt er met mijn gegevens wanneer MoBud wordt bijgewerkt?"
+    },
+    "answer": {
+      "en": "Updates are designed to preserve local data. Before applying an in-app update, MoBud downloads a safety JSON backup where supported. You should still keep regular independent backups because browser storage can be cleared or lost.",
+      "nl": "Updates zijn ontworpen om lokale gegevens te behouden. Voor het toepassen van een update in de app downloadt MoBud waar ondersteund eerst een veiligheidsback-up in JSON. Bewaar toch regelmatig onafhankelijke back-ups, omdat browseropslag kan worden gewist of verloren kan gaan."
+    }
+  },
+  {
+    "id": "support-data",
+    "category": "privacy",
+    "question": {
+      "en": "What information is sent when I report a bug or request a feature?",
+      "nl": "Welke informatie wordt verstuurd wanneer ik een bug of verzoek meld?"
+    },
+    "answer": {
+      "en": "Only the information you enter in the form plus limited technical context such as app version, platform, installation status and online status. Do not include addresses, receipts, vehicle identifiers or other private data.",
+      "nl": "Alleen de informatie die je zelf in het formulier invult, samen met beperkte technische context zoals appversie, platform, installatiestatus en onlinestatus. Voeg geen adressen, bonnetjes, voertuigidentificatie of andere privégegevens toe."
     }
   },
   {
     "id": "freeware",
     "category": "about",
     "question": {
-      "en": "Will MoBud ever charge a subscription or show adverts?",
-      "nl": "Komt er ooit een abonnement of reclame?"
+      "en": "Is MoBud free, ad-free and subscription-free?",
+      "nl": "Is MoBud gratis, advertentievrij en zonder abonnement?"
     },
     "answer": {
-      "en": "MoBud is intended as freeware without adverts or a subscription. External services such as Google Drive remain subject to their own terms and limits.",
-      "nl": "MoBud is bedoeld als freeware zonder advertenties of abonnement. Externe diensten zoals Google Drive vallen wel onder hun eigen voorwaarden en limieten."
+      "en": "Yes. MoBud is currently offered as freeware without adverts, subscriptions or a paid business model. Studio Sampersand intends to keep the core app free. Optional third-party services such as Google Drive remain subject to the terms, availability and limits of those providers.",
+      "nl": "Ja. MoBud wordt momenteel aangeboden als freeware, zonder advertenties, abonnementen of betalend verdienmodel. Studio Sampersand heeft de intentie om de kernapp gratis te houden. Optionele diensten van derden, zoals Google Drive, blijven onderworpen aan de voorwaarden, beschikbaarheid en limieten van die aanbieders."
     }
   },
   {
@@ -85,5 +218,83 @@
       "nl": "Open Garage en kies Voertuig toevoegen. Je kunt standaardvoertuigen, onderhoud, lease en verzekering instellen."
     },
     "tutorial": "garage"
+  },
+  {
+    "id": "how-log-commute",
+    "category": "tutorials",
+    "question": {
+      "en": "How do I quickly log a commute?",
+      "nl": "Hoe registreer ik snel een woon-werkrit?"
+    },
+    "answer": {
+      "en": "On the Dashboard, choose Home → Work or Work → Home and tap the vehicle you used. You can then review and adjust the trip before saving.",
+      "nl": "Kies op het Dashboard Thuis → Werk of Werk → Thuis en tik op het gebruikte voertuig. Daarna kun je de rit nog controleren en aanpassen voor je opslaat."
+    },
+    "tutorial": "quick-commute"
+  },
+  {
+    "id": "how-add-receipt",
+    "category": "tutorials",
+    "question": {
+      "en": "How do I add a receipt, ticket or invoice?",
+      "nl": "Hoe voeg ik een bonnetje, ticket of factuur toe?"
+    },
+    "answer": {
+      "en": "Open Log, choose Cost / receipt, select the vehicle and category, then choose a file or take a photo. Keep the legally valid original for the required retention period.",
+      "nl": "Open Log, kies Kost / bonnetje, selecteer het voertuig en de categorie en kies daarna een bestand of neem een foto. Bewaar het wettelijk geldige origineel gedurende de vereiste bewaartermijn."
+    },
+    "tutorial": "expense-form"
+  },
+  {
+    "id": "how-edit-trip",
+    "category": "tutorials",
+    "question": {
+      "en": "How do I edit or correct a trip?",
+      "nl": "Hoe pas ik een rit aan of corrigeer ik ze?"
+    },
+    "answer": {
+      "en": "Open the trip from Recent rides or the calendar, choose Edit, adjust the vehicle, date, distance or attachment and save again.",
+      "nl": "Open de rit via Recente ritten of de kalender, kies Bewerken, pas voertuig, datum, afstand of bijlage aan en sla opnieuw op."
+    },
+    "tutorial": "trip-form"
+  },
+  {
+    "id": "how-garage",
+    "category": "tutorials",
+    "question": {
+      "en": "How do I add and manage vehicles?",
+      "nl": "Hoe voeg ik voertuigen toe en beheer ik ze?"
+    },
+    "answer": {
+      "en": "Open Garage to add, edit, archive and set default vehicles. Vehicle-specific trips, costs, maintenance and documents stay linked through the vehicle record.",
+      "nl": "Open Garage om voertuigen toe te voegen, te bewerken, te archiveren en als standaard in te stellen. Voertuiggebonden ritten, kosten, onderhoud en documenten blijven via het voertuigrecord gekoppeld."
+    },
+    "tutorial": "garage-nav"
+  },
+  {
+    "id": "how-reports",
+    "category": "tutorials",
+    "question": {
+      "en": "Where can I view totals and reports?",
+      "nl": "Waar bekijk ik totalen en rapporten?"
+    },
+    "answer": {
+      "en": "Open Reports for trip totals, distance per vehicle, vehicle usage mix, costs, receipts and estimated impact.",
+      "nl": "Open Rapporten voor rittotalen, afstand per voertuig, voertuigverdeling, kosten, bonnetjes en geschatte impact."
+    },
+    "tutorial": "stats-nav"
+  },
+  {
+    "id": "tutorial-replay",
+    "category": "tutorials",
+    "question": {
+      "en": "Can I replay the tutorial later?",
+      "nl": "Kan ik de tutorial later opnieuw bekijken?"
+    },
+    "answer": {
+      "en": "Yes. Open More → Help & FAQ and choose Replay tutorial. FAQ items with a tutorial button can jump directly to the relevant screen and element.",
+      "nl": "Ja. Open Meer → Help & FAQ en kies Tutorial opnieuw afspelen. FAQ-items met een tutorialknop kunnen rechtstreeks naar het relevante scherm en element springen."
+    },
+    "tutorial": "help-nav"
   }
 ]

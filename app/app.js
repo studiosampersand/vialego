@@ -1,7 +1,7 @@
 const VERSION='0.000.007';
-const KEY='mobud-beta-data-v0.000.007';
+const KEY='mobud-production-data-v0.000.007';
 const RECOVERY_PREFIX='mobud-recovery-';
-const LEGACY_KEYS=['mobud-beta-data-v0.000.006','mobud-beta-data-v0.000.005','vialego-beta-data-v0.000.004','mobud-beta-data-v0.000.004','vialego-data-v0.000.004','vialego-data-v0.000.003','tsumoriq-data-v0.000.001'];
+const LEGACY_KEYS=['mobud-production-data','mobud-production-data-v0.000.006','mobud-beta-data-v0.000.005','vialego-beta-data-v0.000.004','mobud-beta-data-v0.000.004','vialego-data-v0.000.004','vialego-data-v0.000.003','tsumoriq-data-v0.000.001'];
 const APP_CONFIG=window.MOBUD_CONFIG||window.VIALEGO_CONFIG||{};
 const API=APP_CONFIG.API_BASE||'';
 const GOOGLE_CLIENT_ID=APP_CONFIG.GOOGLE_CLIENT_ID||'';
