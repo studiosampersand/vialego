@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "MoBud Beta",
+  "name": "MoBud Beta v0.000.006",
   "short_name": "MoBud Beta",
-  "description": "Track your mobility and administration.",
+  "description": "Track your mobility and administration. Local-first, multilingual and ad-free.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -10,8 +10,23 @@
   "theme_color": "#0f0f10",
   "orientation": "portrait-primary",
   "icons": [
-    {"src":"./icon-192-v005.png","sizes":"192x192","type":"image/png","purpose":"any"},
-    {"src":"./icon-512-v005.png","sizes":"512x512","type":"image/png","purpose":"any"},
-    {"src":"./icon-maskable-512-v005.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+    {
+      "src": "./icon-192-v005.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512-v005.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable-512-v005.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

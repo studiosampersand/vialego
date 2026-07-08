@@ -29,3 +29,43 @@ html[data-theme="light"] .vehicle-meta div{background:#f7f7f7}
 /* v0.000.005 beta hotfix 2: full-width installation banner */
 .install-banner{position:sticky;top:0;z-index:10000;width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px max(16px,env(safe-area-inset-right)) 12px max(16px,env(safe-area-inset-left));background:linear-gradient(90deg,#ff9f1a 0%,#f7b32b 100%);color:#111;border:0;border-bottom:1px solid rgba(0,0,0,.18);box-shadow:0 8px 24px rgba(0,0,0,.22)}
 .install-banner.hidden{display:none!important}.install-banner__text{font-size:16px;font-weight:800;line-height:1.2;letter-spacing:-.01em}.install-banner__actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}.install-banner__later,.install-banner__install{min-height:40px;border-radius:12px;padding:9px 13px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}.install-banner__later{border:1px solid rgba(17,17,17,.22);background:transparent;color:#111}.install-banner__install{border:1px solid #111;background:#111;color:#f4f4f4}@media(max-width:420px){.install-banner{padding-top:10px;padding-bottom:10px}.install-banner__text{font-size:15px}.install-banner__later,.install-banner__install{padding:8px 10px}}
+
+/* v0.000.005 beta hotfix 3: reports layout and mobility mix */
+.stats-kpi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.stat-summary-row{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:82px;margin:0}
+.stat-summary-row span{font-size:1rem;color:var(--text)}
+.stat-summary-row strong{font-size:1.12rem;text-align:right;white-space:nowrap}
+.usage-mix-card .section-head{margin-bottom:18px}.usage-mix-card h3,.impact-card h3{margin:0}.usage-mix-card .muted{margin:5px 0 0}
+.usage-mix-layout{display:grid;grid-template-columns:170px minmax(0,1fr);align-items:center;gap:22px}
+.usage-donut{width:160px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:var(--usage-gradient,conic-gradient(var(--line) 0 100%));position:relative}
+.usage-donut:after{content:"";position:absolute;inset:28px;border-radius:50%;background:var(--surface);border:1px solid var(--line)}
+.usage-donut>div{position:relative;z-index:1;display:grid;text-align:center}.usage-donut strong{font-size:1.55rem}.usage-donut span{font-size:.75rem;color:var(--muted)}
+.usage-legend{display:grid;gap:10px}.usage-legend-row{display:grid;grid-template-columns:12px minmax(0,1fr) auto;align-items:center;gap:10px}.usage-dot{width:10px;height:10px;border-radius:50%}.usage-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}.usage-legend-row strong{white-space:nowrap}
+.vehicle-distance-list{display:grid;gap:2px;margin-top:12px}.vehicle-distance-row{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.vehicle-distance-row:last-child{border-bottom:0}.vehicle-distance-icon{width:38px;height:38px;border-radius:12px;background:var(--surface-3);color:var(--accent);display:grid;place-items:center}.vehicle-distance-icon svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.vehicle-distance-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vehicle-distance-row strong{text-align:right;white-space:nowrap}
+.impact-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}.impact-row strong{white-space:nowrap;text-align:right}.impact-card .muted{margin-bottom:0}
+@media(max-width:560px){.stats-kpi-grid{grid-template-columns:1fr}.usage-mix-layout{grid-template-columns:1fr}.usage-donut{width:150px;margin:0 auto}.stat-summary-row{min-height:72px}}
+
+/* v0.000.006: complete light mode and localisation polish */
+html[data-theme="light"]{color-scheme:light;--bg:#f4f4f4;--surface:#ffffff;--surface-2:#f8f8f8;--surface-3:#ececec;--text:#171717;--muted:#66666b;--line:#d8d8dc;--accent:#ff9d1c;--accent-strong:#f18700;--accent-soft:rgba(255,157,28,.14);--good:#198754;--bad:#c9343f;--shadow:0 14px 38px rgba(25,25,25,.10)}
+html[data-theme="light"],html[data-theme="light"] body{background:var(--bg);color:var(--text)}
+html[data-theme="light"] .topbar,html[data-theme="light"] .screen,html[data-theme="light"] main{color:var(--text)}
+html[data-theme="light"] .card,html[data-theme="light"] .modal-card,html[data-theme="light"] .recent-list,html[data-theme="light"] .quick-tile,html[data-theme="light"] .dashboard-link,html[data-theme="light"] .stats-strip,html[data-theme="light"] .tutorial-card{background:var(--surface);border-color:var(--line);color:var(--text)}
+html[data-theme="light"] .segmented{background:#ebebed;border-color:var(--line)}
+html[data-theme="light"] input,html[data-theme="light"] select,html[data-theme="light"] textarea{background:#fff;color:var(--text);border-color:var(--line)}
+html[data-theme="light"] .secondary,html[data-theme="light"] .file-label,html[data-theme="light"] .link-btn{background:var(--surface-2);border-color:var(--line);color:var(--text)}
+html[data-theme="light"] .ghost{color:var(--text);border-color:var(--line)}
+html[data-theme="light"] .bottom-nav{background:rgba(255,255,255,.96);border-color:var(--line);box-shadow:0 16px 45px rgba(35,35,35,.14)}
+html[data-theme="light"] .nav-add{border-color:#fff}
+html[data-theme="light"] .log-row,html[data-theme="light"] .faq-item,html[data-theme="light"] .vehicle-distance-row,html[data-theme="light"] .impact-row{border-color:var(--line)}
+html[data-theme="light"] .log-icon,html[data-theme="light"] .vehicle-icon,html[data-theme="light"] .vehicle-distance-icon{background:var(--surface-3)}
+html[data-theme="light"] .cal-day{background:#fff;color:#77777c;border-color:var(--line)}
+html[data-theme="light"] .vehicle-meta div{background:var(--surface-2)}
+html[data-theme="light"] .timeline-track{background:#d7d7da}
+html[data-theme="light"] .usage-donut:after{background:var(--surface)}
+html[data-theme="light"] .modal{background:rgba(18,18,20,.42)}
+html[data-theme="light"] .tutorial-spot{box-shadow:0 0 0 9999px rgba(20,20,22,.46)}
+html[data-theme="light"] .toast{background:#171717;color:#fff}
+html[data-theme="light"] .version-pill{background:#fff}
+html[data-theme="light"] .compact-month{border-color:var(--line)}
+html[data-theme="light"] .install-banner{color:#111}
+#settingLanguage,#onboardLanguage{min-height:48px}

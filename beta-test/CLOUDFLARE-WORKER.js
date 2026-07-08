@@ -91,7 +91,7 @@ export default {
           "",
           "> Submitted from MoBud. The form asks users not to include addresses, receipts, vehicle identifiers or other private data."
         ].filter(Boolean).join("\n");
-        const repo = env.GITHUB_REPO || "studiosampersand/vialego";
+        const repo = env.GITHUB_REPO || "studiosampersand/MoBud";
         const response = await fetch(`https://api.github.com/repos/${repo}/issues`, {
           method: "POST",
           headers: {

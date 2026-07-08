@@ -1,16 +1,17 @@
-# MoBud v0.000.005 Beta
+# MoBud v0.000.006 Beta 1
 
 Track your mobility and administration.
 
-This build is intended for `/MoBud/beta-test/`. It uses an isolated local-storage key and a service-worker scope relative to the beta folder. It migrates a copy of recognised v0.000.004 beta data without deleting the old source data.
+This beta adds:
+- complete dark, light and system themes;
+- language selection for English, Dutch, French, German, Swiss German, Italian, Spanish, Portuguese, Danish, Swedish, Norwegian and Polish;
+- safe migration from the v0.000.005 beta storage key;
+- full Garage/settings inclusion in JSON backups;
+- the full-width install banner;
+- retained route, support, Garage, report and tutorial functionality.
 
-Core changes:
-- redesigned dashboard, Garage, reports and navigation;
-- warm amber-orange accent matching the MoBud logo;
-- inline SVG interface icons;
-- trip cards keep the transport icon as the primary identifier and show the vehicle nickname as secondary information;
-- element-based tutorial targets that navigate to the correct screen;
-- vehicle types and powertrain/fuel filtering;
-- Cloudflare routing and support endpoints retained.
-
-Keep original tickets and invoices for the legally required retention period. Files stored in MoBud are administrative copies.
+## Important
+- Production and beta remain separate local datasets.
+- Google Drive is still not a completed backup/sync implementation. Keep using JSON export during testing.
+- Existing Vialego-named storage keys remain only as migration sources so old data is not lost.
+- Translations are beta copy and should receive native-speaker review before a broad public launch.

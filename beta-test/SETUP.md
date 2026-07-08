@@ -1,94 +1,36 @@
-# MoBud v0.000.005 beta setup
+# MoBud v0.000.006 Beta 1 — manual upload
 
-## 1. Upload to GitHub
+## GitHub
+1. Export a JSON backup from the current beta and production app.
+2. Open the `MoBud` repository and then the `beta-test` folder.
+3. Upload the files from this ZIP directly into `beta-test`, replacing matching files.
+4. Do not create an extra nested folder.
+5. Commit as `Upload MoBud v0.000.006 beta 1`.
+6. Wait for GitHub Pages, then open `https://studiosampersand.github.io/MoBud/beta-test/`.
+7. Apply the update banner or close and reopen the beta.
 
-Use the existing repository and upload all website files into:
+## Cloudflare
+The frontend update does not require a new Worker deployment if the v0.000.005 Worker is already active.
 
-`/beta-test/`
+Verify under Worker settings:
+- Secret `ORS_API_KEY`
+- Secret `GITHUB_TOKEN`
+- Variable `GITHUB_REPO=studiosampersand/MoBud`
 
-The result must be:
+The existing public Worker URL may remain:
+`https://vialego-api.studiosampersand.workers.dev`
 
-- `/beta-test/index.html`
-- `/beta-test/app.js`
-- `/beta-test/styles.css`
-- `/beta-test/config.js`
-- `/beta-test/manifest.json`
-- `/beta-test/service-worker.js`
-- `/beta-test/icon-192-v005.png`
-- `/beta-test/icon-512-v005.png`
-- `/beta-test/icon-maskable-512-v005.png`
+You can rename it later, but then also change `API_BASE` in `config.js`.
 
-Do not add an extra folder level inside `beta-test`.
+## Test
+1. Confirm the version reads `v0.000.006 beta 1`.
+2. Test System, Dark and Light under More → Setup → Appearance.
+3. Change language and confirm Dashboard, Garage, Reports and common forms update.
+4. Save your name, reload, and confirm the greeting retains it.
+5. Export JSON and confirm the file contains `settings`, `vehicles`, `trips` and `expenses`.
+6. Confirm existing v0.000.005 beta data was copied into v0.000.006.
+7. Test address search, route calculation and one support form.
+8. Install the PWA through the orange banner.
 
-Test URL before the custom domain is active:
-
-`https://studiosampersand.github.io/MoBud/beta-test/`
-
-After the domain is active:
-
-`https://mobud.app/beta-test/`
-
-## 2. GitHub Pages
-
-Repository → Settings → Pages:
-
-- Source: Deploy from a branch
-- Branch: main
-- Folder: /root
-
-The production app remains in the repository root. The beta remains in `/beta-test/`.
-
-## 3. Cloudflare Worker
-
-Open Cloudflare → Compute → Workers & Pages → `vialego-api` → Edit code.
-
-Replace the Worker code with `CLOUDFLARE-WORKER.js` from this ZIP and deploy it.
-
-Required allowed origins are already included:
-
-- `https://studiosampersand.github.io`
-- `https://mobud.app`
-
-Required Worker secret:
-
-- `ORS_API_KEY`
-
-Optional support integration:
-
-- Secret: `GITHUB_TOKEN`
-- Variable: `GITHUB_REPO` with a value such as `studiosampersand/MoBud`
-
-The GitHub token should be fine-grained and limited to:
-
-- Metadata: read-only
-- Issues: read and write
-
-## 4. Domain
-
-In GitHub Pages, set the custom domain to `mobud.app`.
-
-At the DNS provider, set the GitHub Pages A records for `@` and a CNAME for `www` pointing to `studiosampersand.github.io`.
-
-Once GitHub validates the domain, enable Enforce HTTPS.
-
-## 5. First test
-
-1. Export a JSON backup from production.
-2. Open the beta URL in a normal browser tab.
-3. Add a recognisable beta-only trip.
-4. Reopen production and confirm the beta trip is not visible there.
-5. Add two vehicles of the same type and set one default.
-6. Test vehicle type and powertrain filters.
-7. Test quick commute, Edit, attachments, calendar, Garage, reports and reminders.
-8. Replay the tutorial from FAQ and confirm each step navigates to and highlights the correct element.
-9. Send one test feature request and one test bug report.
-10. Install the beta PWA only after the browser test succeeds.
-
-Google Drive remains optional and requires a valid Google OAuth client ID before real Drive authentication can work.
-
-
-## Hotfix 1
-- Tutorial targets now use the bottom navigation and stable `data-tutorial` attributes.
-- Quick commute shows one default or most-used Garage vehicle per vehicle type and scrolls horizontally.
-- Appearance supports system, dark and light mode.
-- Base paragraph size is 16px.
+## Google Drive
+Leave `GOOGLE_CLIENT_ID` empty for now. The visible Drive button is not yet a completed conflict-safe backup/sync solution.
