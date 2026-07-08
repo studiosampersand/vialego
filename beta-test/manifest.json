@@ -1,0 +1,16 @@
+{
+  "name":"MoBud",
+  "short_name":"MoBud",
+  "description":"Track your mobility and administration. Local-first travel, vehicle, expense and receipt tracker.",
+  "start_url":"./index.html",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#090f1c",
+  "theme_color":"#111827",
+  "orientation":"portrait-primary",
+  "icons":[
+    {"src":"icon-192-v003b.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"icon-512-v003b.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"icon-maskable-512-v003b.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
+}
