@@ -105,3 +105,18 @@ h3{font-size:1.2rem}
   .site-install-banner{align-items:flex-start;flex-direction:column;padding:12px 14px}
   .site-install-actions{width:100%;justify-content:flex-end}
 }
+
+.ui-icon{width:1.2em;height:1.2em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.usp{display:flex;align-items:center;gap:10px}
+.usp .ui-icon{width:20px;height:20px;color:var(--accent)}
+.feature-icon{display:flex;align-items:center}
+.feature-icon .ui-icon{width:30px;height:30px}
+.highlight-list div{display:flex;align-items:center;gap:10px}
+.highlight-list .ui-icon{width:20px;height:20px;color:var(--accent)}
+.faq-list{align-content:start}
+.faq-item{height:max-content}
+.avatar{object-position:center 42%}
+.footer-row a[href*="studiosampersand.be"],
+.privacy-strip a[href*="studiosampersand.be"],
+.legal-block a[href*="studiosampersand.be"],
+.faq-answer a[href*="studiosampersand.be"]{text-decoration:underline;text-underline-offset:3px}

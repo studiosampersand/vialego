@@ -1,5 +1,17 @@
 [
   {
+    "id": "public-install",
+    "category": "getting-started",
+    "question": {
+      "en": "How do I install MoBud?",
+      "nl": "Hoe installeer ik MoBud?"
+    },
+    "answer": {
+      "en": "Open <a href=\"/app/\">mobud.app/app</a> in your browser and choose Install. On Android and supported desktop browsers, use the install prompt. On iPhone or iPad, use Share → Add to Home Screen. There is no App Store or Google Play download: MoBud is a webapp.",
+      "nl": "Open <a href=\"/app/\">mobud.app/app</a> in je browser en kies Installeren. Op Android en ondersteunde desktopbrowsers gebruik je de installatieprompt. Op iPhone of iPad kies je Deel → Zet op beginscherm. Er is geen download via de App Store of Google Play: MoBud is een webapp."
+    }
+  },
+  {
     "id": "privacy-local",
     "category": "privacy",
     "question": {
@@ -19,8 +31,8 @@
       "nl": "Is MoBud Belgisch gemaakt?"
     },
     "answer": {
-      "en": "Yes. MoBud is an independent Belgian-made freeware project by Studio Sampersand. The app is designed and maintained in Belgium, with a strong focus on practical mobility administration, privacy, user-owned data and clear reporting.",
-      "nl": "Ja. MoBud is een onafhankelijk Belgisch freewareproject van Studio Sampersand. De app wordt in België ontworpen en onderhouden, met een sterke focus op praktische mobiliteitsadministratie, privacy, data-eigenaarschap en duidelijke rapportering."
+      "en": "Yes. MoBud is an independent Belgian-made freeware project by <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a>. The app is designed and maintained in Belgium, with a strong focus on practical mobility administration, privacy, user-owned data and clear reporting.",
+      "nl": "Ja. MoBud is een onafhankelijk Belgisch freewareproject van <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a>. De app wordt in België ontworpen en onderhouden, met een sterke focus op praktische mobiliteitsadministratie, privacy, data-eigenaarschap en duidelijke rapportering."
     }
   },
   {
@@ -55,8 +67,8 @@
       "nl": "Hoe werkt Google Drive-back-up?"
     },
     "answer": {
-      "en": "After you link your Google account, MoBud can upload or restore its backup in the hidden app-data area of that same account. The backup remains associated with the user’s own Drive. It is not stored in Studio Sampersand’s Drive or on a central MoBud server.",
-      "nl": "Na het koppelen van je Google-account kan MoBud zijn back-up uploaden of herstellen in de verborgen app-data van datzelfde account. De back-up blijft gekoppeld aan de eigen Drive van de gebruiker. Ze wordt niet opgeslagen in de Drive van Studio Sampersand of op een centrale MoBud-server."
+      "en": "After you link your Google account, MoBud can upload or restore its backup in the hidden app-data area of that same account. The backup remains associated with the user’s own Drive. It is not stored in <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a>’s Drive or on a central MoBud server.",
+      "nl": "Na het koppelen van je Google-account kan MoBud zijn back-up uploaden of herstellen in de verborgen app-data van datzelfde account. De back-up blijft gekoppeld aan de eigen Drive van de gebruiker. Ze wordt niet opgeslagen in de Drive van <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a> of op een centrale MoBud-server."
     }
   },
   {
@@ -67,20 +79,20 @@
       "nl": "Waar wordt mijn Google Drive-back-up opgeslagen?"
     },
     "answer": {
-      "en": "The backup is stored in the Google Drive account selected by you. It is not stored in Studio Sampersand's Drive and is not copied to a central MoBud server. Storage usage counts against the selected user's own Google Drive quota.",
-      "nl": "De back-up wordt opgeslagen in het Google Drive-account dat je zelf kiest. Ze wordt niet opgeslagen in de Drive van Studio Sampersand en niet gekopieerd naar een centrale MoBud-server. Het opslaggebruik telt mee voor de eigen Google Drive-opslag van de gekozen gebruiker."
+      "en": "The backup is stored in the Google Drive account selected by you. It is not stored in <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a>'s Drive and is not copied to a central MoBud server. Storage usage counts against the selected user's own Google Drive quota.",
+      "nl": "De back-up wordt opgeslagen in het Google Drive-account dat je zelf kiest. Ze wordt niet opgeslagen in de Drive van <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a> en niet gekopieerd naar een centrale MoBud-server. Het opslaggebruik telt mee voor de eigen Google Drive-opslag van de gekozen gebruiker."
     }
   },
   {
     "id": "drive-visibility",
     "category": "privacy",
     "question": {
-      "en": "Can MoBud or Studio Sampersand view my other Google Drive files?",
-      "nl": "Kan MoBud of Studio Sampersand mijn andere Google Drive-bestanden bekijken?"
+      "en": "Can MoBud or <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a> view my other Google Drive files?",
+      "nl": "Kan MoBud of <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a> mijn andere Google Drive-bestanden bekijken?"
     },
     "answer": {
-      "en": "No, not with the selected drive.appdata permission. MoBud can only manage its own hidden app-data area in the Google account you connect. Studio Sampersand does not receive a copy of your backup and has no dashboard or server access to your trips, vehicles, receipts, photos or Drive content.",
-      "nl": "Nee, niet met de gekozen toestemming drive.appdata. MoBud kan alleen de eigen verborgen app-data in het gekoppelde Google-account beheren. Studio Sampersand ontvangt geen kopie van je back-up en heeft geen dashboard- of servertoegang tot je ritten, voertuigen, bonnetjes, foto’s of Drive-inhoud."
+      "en": "No, not with the selected drive.appdata permission. MoBud can only manage its own hidden app-data area in the Google account you connect. <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a> does not receive a copy of your backup and has no dashboard or server access to your trips, vehicles, receipts, photos or Drive content.",
+      "nl": "Nee, niet met de gekozen toestemming drive.appdata. MoBud kan alleen de eigen verborgen app-data in het gekoppelde Google-account beheren. <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a> ontvangt geen kopie van je back-up en heeft geen dashboard- of servertoegang tot je ritten, voertuigen, bonnetjes, foto’s of Drive-inhoud."
     }
   },
   {
@@ -177,8 +189,8 @@
       "nl": "Is MoBud gratis, advertentievrij en zonder abonnement?"
     },
     "answer": {
-      "en": "Yes. MoBud is currently offered as freeware without adverts, subscriptions or a paid business model. Studio Sampersand intends to keep the core app free. Optional third-party services such as Google Drive remain subject to the terms, availability and limits of those providers.",
-      "nl": "Ja. MoBud wordt momenteel aangeboden als freeware, zonder advertenties, abonnementen of betalend verdienmodel. Studio Sampersand heeft de intentie om de kernapp gratis te houden. Optionele diensten van derden, zoals Google Drive, blijven onderworpen aan de voorwaarden, beschikbaarheid en limieten van die aanbieders."
+      "en": "Yes. MoBud is currently offered as freeware without adverts, subscriptions or a paid business model. <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a> intends to keep the core app free. Optional third-party services such as Google Drive remain subject to the terms, availability and limits of those providers.",
+      "nl": "Ja. MoBud wordt momenteel aangeboden als freeware, zonder advertenties, abonnementen of betalend verdienmodel. <a href=\"https://www.studiosampersand.be\" target=\"_blank\" rel=\"noopener noreferrer\">Studio Sampersand</a> heeft de intentie om de kernapp gratis te houden. Optionele diensten van derden, zoals Google Drive, blijven onderworpen aan de voorwaarden, beschikbaarheid en limieten van die aanbieders."
     }
   },
   {
