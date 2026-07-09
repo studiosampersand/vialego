@@ -260,3 +260,15 @@ html[data-theme="light"] input[type="time"],body[data-theme="light"] input[type=
   #garageList>.garage-card{margin:0;min-width:0}
   .quick-vehicle-row{grid-template-columns:repeat(8,minmax(86px,1fr))}
 }
+
+/* v0.000.009 light-theme chevron tiling hotfix6 */
+html[data-theme="light"] select,
+body[data-theme="light"] select,
+html[data-theme="light"] input[type="time"],
+body[data-theme="light"] input[type="time"]{
+  background-repeat:no-repeat!important;
+  background-position:calc(100% - 15px) 50%!important;
+  background-size:20px 20px!important;
+  background-origin:border-box!important;
+  background-clip:padding-box!important;
+}
