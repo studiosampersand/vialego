@@ -46,7 +46,7 @@ function applyTheme(pref=state.settings.theme||'system'){const resolved=pref==='
 matchMedia('(prefers-color-scheme: light)').addEventListener?.('change',()=>{if((state.settings.theme||'system')==='system')applyTheme('system')});
 let autoSyncTimer=null,syncBusy=false,suppressAutoSync=false,drivePollTimer=null,sessionHeartbeatTimer=null,lastRemoteModified='';
 function touchState(){const now=new Date().toISOString();state.version=VERSION;state.syncMeta={...(state.syncMeta||{}),modifiedAt:now,updatedByDevice:DEVICE_ID};return now}
-function save(options={}){if(!options.preserveTimestamp)touchState();const payload=JSON.stringify(state);try{localStorage.setItem(KEY,payload);const check=safeParse(localStorage.getItem(KEY));if(!validData(check)||check.trips.length!==state.trips.length||check.expenses.length!==state.expenses.length)throw new Error('Verification failed');render();if(!options.skipSync&&!suppressAutoSync)scheduleAutoSync();return true}catch(e){toast('Save failed. Existing data was kept. Export a backup before adding more attachments.');return false}}
+function save(options={}){if(!options.preserveTimestamp)touchState();const payload=JSON.stringify(state);try{localStorage.setItem(KEY,payload);const check=safeParse(localStorage.getItem(KEY));if(!validData(check)||check.trips.length!==state.trips.length||check.expenses.length!==state.expenses.length)throw new Error('Verification failed');if(!options.skipRender)render();if(!options.skipSync&&!suppressAutoSync)scheduleAutoSync();return true}catch(e){toast('Save failed. Existing data was kept. Export a backup before adding more attachments.');return false}}
 function scheduleAutoSync(delay=3000){if(!state.settings.driveConnected||!sessionStorage.getItem('mobudGoogleToken'))return;clearTimeout(autoSyncTimer);autoSyncTimer=setTimeout(()=>syncWithDrive({silent:true,reason:'local-change'}),delay)}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.add('hidden'),2600)}
 function setScreen(name){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById('screen-'+name).classList.add('active');document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.screen===name));if(name==='garage')renderGarage();if(name==='stats')renderStats();if(name==='calendar')renderCalendar()}
@@ -208,14 +208,14 @@ function updateLocationLabel(id,value){
   if(id==='home1')state.settings.homeLabel=value;
   else if(id==='work')state.settings.workLabel=value;
   else{const loc=(state.settings.locations||[]).find(x=>x.id===id);if(loc)loc.label=value}
-  state.syncMeta.settingsUpdatedAt=new Date().toISOString();save();fillLocations();renderDirectionLabels();
+  state.syncMeta.settingsUpdatedAt=new Date().toISOString();save({skipRender:true});renderDirectionLabels();
 }
 function updateLocationAddress(id,value){
   if(id==='home1')state.settings.home1=value;
   else if(id==='work')state.settings.work=value;
   else{const loc=(state.settings.locations||[]).find(x=>x.id===id);if(loc)loc.address=value}
   if(state.addresses[id])state.addresses[id].label=value;
-  state.syncMeta.settingsUpdatedAt=new Date().toISOString();save();
+  state.syncMeta.settingsUpdatedAt=new Date().toISOString();save({skipRender:true});
 }
 function addLocation(){
   state.settings.locations=Array.isArray(state.settings.locations)?state.settings.locations:[];
@@ -366,4 +366,4 @@ tripDate.value=expenseDate.value=todayISO();onboardLanguage.value=state.settings
 
 async function fetchPartnerMetadata(urlInput,prefix){const url=urlInput.value.trim();if(!url){toast('Enter a website first.');return}try{toast('Looking up public contact details…');const r=await fetch(`${API}/metadata?url=${encodeURIComponent(url)}`);if(!r.ok)throw new Error();const d=await r.json();const map={seller:['vehicleBoughtFrom','vehicleSellerPhone','vehicleSellerAddress'],lease:['vehicleLeasePartner','vehicleLeasePhone','vehicleLeaseAddress'],maintenance:['vehicleMaintenanceProvider','vehicleMaintenanceContact','vehicleMaintenanceAddress'],insurance:['vehicleInsurance','vehicleInsurancePhone','vehicleInsuranceAddress']};const ids=map[prefix];if(d.name&&!document.getElementById(ids[0]).value)document.getElementById(ids[0]).value=d.name;if(d.phone&&!document.getElementById(ids[1]).value)document.getElementById(ids[1]).value=d.phone;if(d.address&&!document.getElementById(ids[2]).value)document.getElementById(ids[2]).value=d.address;toast(d.name||d.phone||d.address?'Public details added — please verify them.':'No public contact details found.')}catch{toast('Could not retrieve public contact details. You can enter them manually.')}}
 vehicleType.addEventListener('change',()=>updatePowertrainOptions(vehicleType.value));document.querySelectorAll('[data-fetch-partner]').forEach(b=>b.addEventListener('click',()=>fetchPartnerMetadata(document.getElementById(b.dataset.urlInput),b.dataset.fetchPartner)));
-['settingName','settingLanguage','settingCurrency','settingUnit','settingTheme','settingCountry','commuteReminderMode','dailyReminderTime','weeklyReminderDay','weeklyReminderTime','backupFrequency','reportFrequency','notifyUpdates'].forEach(id=>{const el=document.getElementById(id);if(el){el.addEventListener(id==='settingName'?'input':'change',autoSaveSettings)}});
+settingName?.addEventListener('input',()=>{state.settings.name=settingName.value;state.syncMeta.settingsUpdatedAt=new Date().toISOString();save({skipRender:true});const h=new Date().getHours(),base=h<12?t('Good morning'):h<18?t('Good afternoon'):t('Good evening');greeting.textContent=`${base}${state.settings.name?', '+state.settings.name:''}`;autosaveStatus.classList.add('visible');clearTimeout(autoSaveSettings.timer);autoSaveSettings.timer=setTimeout(()=>autosaveStatus.classList.remove('visible'),1200)});settingName?.addEventListener('blur',()=>{state.settings.name=settingName.value.trim();save({skipRender:true})});['settingLanguage','settingCurrency','settingUnit','settingTheme','settingCountry','commuteReminderMode','dailyReminderTime','weeklyReminderDay','weeklyReminderTime','backupFrequency','reportFrequency','notifyUpdates'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',autoSaveSettings)});
