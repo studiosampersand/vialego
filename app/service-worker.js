@@ -1,5 +1,5 @@
-const CACHE='mobud-production-v0-000-008-hotfix6';
-const V='008-hf6';
+const CACHE='mobud-production-v0-000-008-hotfix7';
+const V='008-hf7';
 const ASSETS=['./','./index.html','./styles.css?v='+V,'./app.js?v='+V,'./config.js?v='+V,'./i18n.js?v='+V,'./manifest.json','./content/faq.json','./content/mobility-providers.json','./icon-192-v005.png','./icon-512-v005.png','./icon-maskable-512-v005.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('mobud-production-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
