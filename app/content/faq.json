@@ -1,0 +1,89 @@
+[
+  {
+    "id": "privacy-local",
+    "category": "privacy",
+    "question": {
+      "en": "Where is my data stored?",
+      "nl": "Waar worden mijn gegevens bewaard?"
+    },
+    "answer": {
+      "en": "Locally on your device by default. MoBud does not operate a central database containing your trips, addresses, vehicles, receipts or photos.",
+      "nl": "Standaard lokaal op je toestel. MoBud beheert geen centrale databank met je ritten, adressen, voertuigen, bonnetjes of foto's."
+    }
+  },
+  {
+    "id": "backup-json",
+    "category": "backup",
+    "question": {
+      "en": "How does a local backup work?",
+      "nl": "Hoe werkt een lokale back-up?"
+    },
+    "answer": {
+      "en": "Export a JSON backup from Reports. It includes settings, Garage vehicles, trips, costs and embedded attachments. Store it somewhere safe.",
+      "nl": "Exporteer via Rapporten een JSON-back-up. Die bevat instellingen, Garage-voertuigen, ritten, kosten en ingebedde bijlagen. Bewaar die veilig."
+    },
+    "tutorial": "backup"
+  },
+  {
+    "id": "drive",
+    "category": "backup",
+    "question": {
+      "en": "What does Google Drive backup do?",
+      "nl": "Wat doet Google Drive-back-up?"
+    },
+    "answer": {
+      "en": "It stores MoBud's backup in your own Google Drive app-data area. Studio Sampersand cannot see those files. Google's terms and limits apply.",
+      "nl": "De back-up wordt opgeslagen in de app-data van je eigen Google Drive. Studio Sampersand kan die bestanden niet zien. De voorwaarden en limieten van Google zijn van toepassing."
+    }
+  },
+  {
+    "id": "freeware",
+    "category": "about",
+    "question": {
+      "en": "Will MoBud ever charge a subscription or show adverts?",
+      "nl": "Komt er ooit een abonnement of reclame?"
+    },
+    "answer": {
+      "en": "MoBud is intended as freeware without adverts or a subscription. External services such as Google Drive remain subject to their own terms and limits.",
+      "nl": "MoBud is bedoeld als freeware zonder advertenties of abonnement. Externe diensten zoals Google Drive vallen wel onder hun eigen voorwaarden en limieten."
+    }
+  },
+  {
+    "id": "responsibility",
+    "category": "legal",
+    "question": {
+      "en": "Who is responsible for backups, routes and tax use?",
+      "nl": "Wie is verantwoordelijk voor back-ups, routes en fiscaal gebruik?"
+    },
+    "answer": {
+      "en": "You remain responsible for backups, checking routes, keeping original documents and obtaining professional tax advice. MoBud is provided without warranty.",
+      "nl": "Je blijft zelf verantwoordelijk voor back-ups, routecontrole, het bewaren van originele documenten en professioneel fiscaal advies. MoBud wordt zonder garantie aangeboden."
+    }
+  },
+  {
+    "id": "receipts",
+    "category": "documents",
+    "question": {
+      "en": "Can I discard the original receipt?",
+      "nl": "Mag ik het originele bonnetje weggooien?"
+    },
+    "answer": {
+      "en": "No. Keep the legally valid paper or native electronic original for the required retention period.",
+      "nl": "Nee. Bewaar het rechtsgeldige papieren of oorspronkelijke elektronische document gedurende de vereiste bewaartermijn."
+    },
+    "tutorial": "expense"
+  },
+  {
+    "id": "vehicle",
+    "category": "garage",
+    "question": {
+      "en": "How do I add or manage a vehicle?",
+      "nl": "Hoe voeg ik een voertuig toe of beheer ik het?"
+    },
+    "answer": {
+      "en": "Open Garage and choose Add vehicle. You can define defaults, maintenance, lease and insurance details.",
+      "nl": "Open Garage en kies Voertuig toevoegen. Je kunt standaardvoertuigen, onderhoud, lease en verzekering instellen."
+    },
+    "tutorial": "garage"
+  }
+]
