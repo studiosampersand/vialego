@@ -162,3 +162,6 @@ body[data-theme="light"] .muted,body[data-theme="light"] .legal-note,body[data-t
     margin-right:auto!important;
   }
 }
+
+/* v0.000.008 hotfix 4 — cache-busted desktop container */
+@media (min-width:621px){#app.app-shell{width:100%!important;max-width:760px!important;margin-inline:auto!important;}}
