@@ -1,4 +1,4 @@
-const CACHE='mobud-production-v0-000-008';
+const CACHE='mobud-production-v0-000-008-hotfix5';
 const V='008-hf4';
 const ASSETS=['./','./index.html','./styles.css?v='+V,'./app.js?v='+V,'./config.js?v='+V,'./i18n.js?v='+V,'./manifest.json','./content/faq.json','./content/mobility-providers.json','./icon-192-v005.png','./icon-512-v005.png','./icon-maskable-512-v005.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));

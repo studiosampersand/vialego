@@ -165,3 +165,11 @@ body[data-theme="light"] .muted,body[data-theme="light"] .legal-note,body[data-t
 
 /* v0.000.008 hotfix 4 — cache-busted desktop container */
 @media (min-width:621px){#app.app-shell{width:100%!important;max-width:760px!important;margin-inline:auto!important;}}
+
+/* v0.000.008 hotfix 5: editable addresses and country providers */
+.address-editor{border:1px solid var(--border);border-radius:16px;padding:14px;margin:12px 0;background:var(--surface-elevated)}
+.address-editor-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
+.address-editor label{margin:0 0 10px}.address-editor-head label{margin:0}
+.provider-list{display:grid;gap:10px}.provider-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.provider-item:last-child{border-bottom:0}.provider-item strong,.provider-item small{display:block}.provider-item small{color:var(--muted);margin-top:3px}.provider-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:620px){.address-editor-head{grid-template-columns:1fr}.provider-item{align-items:flex-start;flex-direction:column}.provider-actions{justify-content:flex-start}}

@@ -16,9 +16,9 @@ const t=(text)=>window.MOBUD_I18N?.tr?.(text)||text;
 const iconId=t=>({bicycle:'i-bike',ebike:'i-ebike',speed_pedelec:'i-ebike',car:'i-car',van:'i-car',motorcycle:'i-motorcycle',scooter:'i-motorcycle',public_transport:'i-train',plane:'i-plane',helicopter:'i-helicopter',walking:'i-walk',other:'i-more'})[t]||'i-more';
 const iconType=t=>`<svg aria-hidden="true"><use href="#${iconId(t)}"/></svg>`
 const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fresh=()=>({version:VERSION,onboardingComplete:false,settings:{name:'',currency:'€',unit:'km',home1:'',home2:'',home3:'',work:'',backupFrequency:'never',reportFrequency:'never',notifyUpdates:false,commuteReminderMode:'never',dailyReminderTime:'19:00',weeklyReminderDay:6,weeklyReminderTime:'10:00',lastCommuteReminder:'',theme:'system',language:(window.MOBUD_I18N?.language||'en'),storageMode:'local',driveConnected:false,lastDriveSync:'',country:'BE',locations:[]},vehicles:[],trips:[],expenses:[],tombstones:{trips:[],expenses:[],vehicles:[]},syncMeta:{modifiedAt:'',settingsUpdatedAt:'',updatedByDevice:DEVICE_ID,changeToken:''},addresses:{},routeCache:{},selectedDirection:'home-work'});
+const fresh=()=>({version:VERSION,onboardingComplete:false,settings:{name:'',currency:'€',unit:'km',home1:'',homeLabel:'Home',work:'',workLabel:'Work',backupFrequency:'never',reportFrequency:'never',notifyUpdates:false,commuteReminderMode:'never',dailyReminderTime:'19:00',weeklyReminderDay:6,weeklyReminderTime:'10:00',lastCommuteReminder:'',theme:'system',language:(window.MOBUD_I18N?.language||'en'),storageMode:'local',driveConnected:false,lastDriveSync:'',country:'BE',locations:[]},vehicles:[],trips:[],expenses:[],tombstones:{trips:[],expenses:[],vehicles:[]},syncMeta:{modifiedAt:'',settingsUpdatedAt:'',updatedByDevice:DEVICE_ID,changeToken:''},addresses:{},routeCache:{},selectedDirection:'home-work'});
 function safeParse(raw){try{return raw?JSON.parse(raw):null}catch{return null}}
-function normalized(data){const base=fresh(),d=data&&typeof data==='object'?data:{},stamp=d.syncMeta?.modifiedAt||d.exportedAt||new Date(0).toISOString();const stampRows=rows=>(Array.isArray(rows)?rows:[]).map(x=>({...x,updatedAt:x.updatedAt||x.createdAt||stamp,updatedByDevice:x.updatedByDevice||d.syncMeta?.updatedByDevice||''}));return {...base,...d,settings:{...base.settings,...(d.settings||{})},vehicles:stampRows(d.vehicles),trips:stampRows(d.trips),expenses:stampRows(d.expenses),tombstones:{trips:Array.isArray(d.tombstones?.trips)?d.tombstones.trips:[],expenses:Array.isArray(d.tombstones?.expenses)?d.tombstones.expenses:[],vehicles:Array.isArray(d.tombstones?.vehicles)?d.tombstones.vehicles:[]},syncMeta:{...base.syncMeta,...(d.syncMeta||{})},addresses:d.addresses&&typeof d.addresses==='object'?d.addresses:{},routeCache:d.routeCache&&typeof d.routeCache==='object'?d.routeCache:{}}}
+function normalized(data){const base=fresh(),d=data&&typeof data==='object'?data:{},stamp=d.syncMeta?.modifiedAt||d.exportedAt||new Date(0).toISOString();const stampRows=rows=>(Array.isArray(rows)?rows:[]).map(x=>({...x,updatedAt:x.updatedAt||x.createdAt||stamp,updatedByDevice:x.updatedByDevice||d.syncMeta?.updatedByDevice||''}));const mergedSettings={...base.settings,...(d.settings||{})};if(!Array.isArray(mergedSettings.locations))mergedSettings.locations=[];[['home2','Second address'],['home3','Third address']].forEach(([key,label])=>{if(mergedSettings[key]&&!mergedSettings.locations.some(l=>l.legacyKey===key))mergedSettings.locations.push({id:uid('location'),kind:'other',label,address:mergedSettings[key],legacyKey:key})});return {...base,...d,settings:mergedSettings,vehicles:stampRows(d.vehicles),trips:stampRows(d.trips),expenses:stampRows(d.expenses),tombstones:{trips:Array.isArray(d.tombstones?.trips)?d.tombstones.trips:[],expenses:Array.isArray(d.tombstones?.expenses)?d.tombstones.expenses:[],vehicles:Array.isArray(d.tombstones?.vehicles)?d.tombstones.vehicles:[]},syncMeta:{...base.syncMeta,...(d.syncMeta||{})},addresses:d.addresses&&typeof d.addresses==='object'?d.addresses:{},routeCache:d.routeCache&&typeof d.routeCache==='object'?d.routeCache:{}}}
 function validData(d){return d&&Array.isArray(d.trips)&&Array.isArray(d.expenses)&&Array.isArray(d.vehicles)&&d.settings&&typeof d.settings==='object'}
 function snapshot(key,raw,label='migration'){if(!raw)return null;const stamp=new Date().toISOString().replace(/[:.]/g,'-');const recoveryKey=`${RECOVERY_PREFIX}${label}-${stamp}`;try{localStorage.setItem(recoveryKey,JSON.stringify({sourceKey:key,createdAt:new Date().toISOString(),raw}));return recoveryKey}catch{return null}}
 function migrate(){
@@ -167,8 +167,82 @@ function renderStats(){
     </div>`;
 }
 function renderCalendar(){calendarTitle.textContent=fmtMonth(calendarDate);const y=calendarDate.getFullYear(),m=calendarDate.getMonth(),first=(new Date(y,m,1).getDay()+6)%7,days=new Date(y,m+1,0).getDate(),counts={};allRows().forEach(x=>counts[x.date]=(counts[x.date]||0)+1);let html='';for(let i=0;i<first;i++)html+='<span></span>';for(let d=1;d<=days;d++){const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;html+=`<button class="cal-day ${counts[iso]?'filled':''} ${iso===selectedDay?'selected':''} ${iso===todayISO()?'today':''}" data-day="${iso}"><span>${d}</span>${counts[iso]?`<small>${counts[iso]}</small>`:''}</button>`}calendarGrid.innerHTML=html;document.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{selectedDay=b.dataset.day;renderCalendar()});selectedDayTitle.textContent=new Date(selectedDay+'T12:00:00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'});const rows=allRows().filter(x=>x.date===selectedDay);dayLogs.innerHTML=rows.length?rows.map(logHtml).join(''):'No registrations on this day.';bindLogButtons(dayLogs)}
-function renderSettings(){settingName.value=state.settings.name||'';settingLanguage.value=state.settings.language||window.MOBUD_I18N?.language||'en';settingCurrency.value=state.settings.currency||'€';settingUnit.value=state.settings.unit||'km';settingTheme.value=state.settings.theme||'system';commuteReminderMode.value=state.settings.commuteReminderMode||'never';dailyReminderTime.value=state.settings.dailyReminderTime||'19:00';weeklyReminderDay.value=String(state.settings.weeklyReminderDay??6);weeklyReminderTime.value=state.settings.weeklyReminderTime||'10:00';backupFrequency.value=state.settings.backupFrequency||'never';reportFrequency.value=state.settings.reportFrequency||'never';notifyUpdates.checked=!!state.settings.notifyUpdates;storageStatus.textContent=state.settings.driveConnected?'Google Drive connected':'Data is stored locally on this device.';lastSyncStatus.textContent=`Last sync: ${state.settings.lastDriveSync||'never'}`;lastSyncStatus.classList.toggle('hidden',!state.settings.driveConnected);linkDrive.classList.toggle('hidden',state.settings.driveConnected);syncDrive.classList.toggle('hidden',!state.settings.driveConnected);driveBackupCreate.classList.toggle('hidden',!state.settings.driveConnected);driveBackupImport.classList.toggle('hidden',!state.settings.driveConnected);disconnectDrive.classList.toggle('hidden',!state.settings.driveConnected);addressFields.innerHTML=['home1','home2','home3','work'].map(k=>`<label>${({home1:'Home 1',home2:'Home 2',home3:'Home 3',work:'Work'})[k]}<input data-address="${k}" value="${state.settings[k]||''}" placeholder="Enter and select an address"><div class="suggestions" id="suggest_${k}"></div></label>`).join('');document.querySelectorAll('[data-address]').forEach(inp=>{let timer;inp.oninput=()=>{clearTimeout(timer);timer=setTimeout(()=>searchAddress(inp.dataset.address,inp.value),450)}});renderFaq()}
-async function searchAddress(key,text){const box=document.getElementById('suggest_'+key);if(text.trim().length<3){box.innerHTML='';return}try{const r=await fetch(`${API}/geocode?text=${encodeURIComponent(text)}`,{cache:'no-store'});if(!r.ok)throw new Error(r.status);const j=await r.json();box.innerHTML=(j.features||[]).slice(0,5).map((f,i)=>`<button type="button" class="ghost small" data-suggestion="${key}" data-index="${i}">${f.properties.label}</button>`).join('');box._features=j.features||[];box.querySelectorAll('[data-suggestion]').forEach(b=>b.onclick=()=>{const f=box._features[Number(b.dataset.index)];state.settings[key]=f.properties.label;state.addresses[key]={label:f.properties.label,coords:f.geometry.coordinates};state.syncMeta.settingsUpdatedAt=new Date().toISOString();save()})}catch(e){box.innerHTML='<small class="muted">Address search unavailable; manual entry remains possible.</small>'}}
+function renderSettings(){
+  settingName.value=state.settings.name||'';
+  settingLanguage.value=state.settings.language||window.MOBUD_I18N?.language||'en';
+  settingCountry.value=state.settings.country||'BE';
+  settingCurrency.value=state.settings.currency||'€';
+  settingUnit.value=state.settings.unit||'km';
+  settingTheme.value=state.settings.theme||'system';
+  commuteReminderMode.value=state.settings.commuteReminderMode||'never';
+  dailyReminderTime.value=state.settings.dailyReminderTime||'19:00';
+  weeklyReminderDay.value=String(state.settings.weeklyReminderDay??6);
+  weeklyReminderTime.value=state.settings.weeklyReminderTime||'10:00';
+  backupFrequency.value=state.settings.backupFrequency||'never';
+  reportFrequency.value=state.settings.reportFrequency||'never';
+  notifyUpdates.checked=!!state.settings.notifyUpdates;
+  storageStatus.textContent=state.settings.driveConnected?'Google Drive connected':'Data is stored locally on this device.';
+  lastSyncStatus.textContent=`Last sync: ${state.settings.lastDriveSync||'never'}`;
+  lastSyncStatus.classList.toggle('hidden',!state.settings.driveConnected);
+  linkDrive.classList.toggle('hidden',state.settings.driveConnected);
+  syncDrive.classList.toggle('hidden',!state.settings.driveConnected);
+  driveBackupCreate.classList.toggle('hidden',!state.settings.driveConnected);
+  driveBackupImport.classList.toggle('hidden',!state.settings.driveConnected);
+  disconnectDrive.classList.toggle('hidden',!state.settings.driveConnected);
+  renderAddressSettings();
+  renderMobilityProviders();
+  renderFaq();
+}
+function addressEditorRow(loc,locked=false){
+  return `<div class="address-editor" data-location-row="${escapeHtml(loc.id)}"><div class="address-editor-head"><label>Location name<input data-location-label="${escapeHtml(loc.id)}" value="${escapeHtml(loc.label||'')}" placeholder="e.g. Home, Office, Parents"></label>${locked?'':`<button type="button" class="ghost small" data-remove-location="${escapeHtml(loc.id)}">Remove</button>`}</div><label>Address<input data-address="${escapeHtml(loc.id)}" value="${escapeHtml(loc.address||'')}" placeholder="Enter and select an address"><div class="suggestions" id="suggest_${escapeHtml(loc.id)}"></div></label></div>`;
+}
+function renderAddressSettings(){
+  const locations=allLocations();
+  addressFields.innerHTML=locations.map(l=>addressEditorRow(l,l.id==='home1'||l.id==='work')).join('')+'<button type="button" id="addAddress" class="secondary">+ Add address</button>';
+  document.querySelectorAll('[data-location-label]').forEach(inp=>inp.oninput=()=>updateLocationLabel(inp.dataset.locationLabel,inp.value));
+  document.querySelectorAll('[data-address]').forEach(inp=>{let timer;inp.oninput=()=>{updateLocationAddress(inp.dataset.address,inp.value);clearTimeout(timer);timer=setTimeout(()=>searchAddress(inp.dataset.address,inp.value),450)}});
+  document.querySelectorAll('[data-remove-location]').forEach(btn=>btn.onclick=()=>removeLocation(btn.dataset.removeLocation));
+  document.getElementById('addAddress').onclick=addLocation;
+}
+function updateLocationLabel(id,value){
+  if(id==='home1')state.settings.homeLabel=value;
+  else if(id==='work')state.settings.workLabel=value;
+  else{const loc=(state.settings.locations||[]).find(x=>x.id===id);if(loc)loc.label=value}
+  state.syncMeta.settingsUpdatedAt=new Date().toISOString();save();fillLocations();renderDirectionLabels();
+}
+function updateLocationAddress(id,value){
+  if(id==='home1')state.settings.home1=value;
+  else if(id==='work')state.settings.work=value;
+  else{const loc=(state.settings.locations||[]).find(x=>x.id===id);if(loc)loc.address=value}
+  if(state.addresses[id])state.addresses[id].label=value;
+  state.syncMeta.settingsUpdatedAt=new Date().toISOString();save();
+}
+function addLocation(){
+  state.settings.locations=Array.isArray(state.settings.locations)?state.settings.locations:[];
+  state.settings.locations.push({id:uid('location'),kind:'other',label:'New address',address:''});
+  state.syncMeta.settingsUpdatedAt=new Date().toISOString();save();renderAddressSettings();fillLocations();
+}
+function removeLocation(id){
+  if(!confirm('Remove this saved address? Existing trips keep their stored text.'))return;
+  state.settings.locations=(state.settings.locations||[]).filter(x=>x.id!==id);delete state.addresses[id];
+  state.syncMeta.settingsUpdatedAt=new Date().toISOString();save();renderAddressSettings();fillLocations();
+}
+function renderDirectionLabels(){
+  const home=allLocations().find(l=>l.id==='home1')?.label||'Home';
+  const work=allLocations().find(l=>l.id==='work')?.label||'Work';
+  const a=dirHomeWork?.querySelector('span'),b=dirWorkHome?.querySelector('span');
+  if(a)a.textContent=`${home} → ${work}`;if(b)b.textContent=`${work} → ${home}`;
+}
+async function renderMobilityProviders(){
+  const country=state.settings.country||'BE';
+  mobilityProviderList.innerHTML='<p class="muted">Loading providers…</p>';
+  try{
+    const r=await fetch('./content/mobility-providers.json',{cache:'no-store'});if(!r.ok)throw new Error();
+    const providers=(await r.json()).filter(p=>p.country===country);
+    mobilityProviderList.innerHTML=providers.length?providers.map(p=>`<article class="provider-item"><div><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.category||'Mobility provider')}</small></div><div class="provider-actions"><a class="ghost small" href="${escapeHtml(p.website)}" target="_blank" rel="noopener noreferrer">Website</a>${p.appUrl?`<a class="ghost small" href="${escapeHtml(p.appUrl)}" target="_blank" rel="noopener noreferrer">App</a>`:''}</div></article>`).join(''):'<p class="muted">No providers are available for this country yet.</p>';
+  }catch{mobilityProviderList.innerHTML='<p class="muted">Provider list could not be loaded.</p>'}
+}
+async function searchAddress(key,text){const box=document.getElementById('suggest_'+key);if(text.trim().length<3){box.innerHTML='';return}try{const r=await fetch(`${API}/geocode?text=${encodeURIComponent(text)}`,{cache:'no-store'});if(!r.ok)throw new Error(r.status);const j=await r.json();box.innerHTML=(j.features||[]).slice(0,5).map((f,i)=>`<button type="button" class="ghost small" data-suggestion="${key}" data-index="${i}">${f.properties.label}</button>`).join('');box._features=j.features||[];box.querySelectorAll('[data-suggestion]').forEach(b=>b.onclick=()=>{const f=box._features[Number(b.dataset.index)];updateLocationAddress(key,f.properties.label);state.addresses[key]={label:f.properties.label,coords:f.geometry.coordinates};state.syncMeta.settingsUpdatedAt=new Date().toISOString();save();renderAddressSettings();fillLocations()})}catch(e){box.innerHTML='<small class="muted">Address search unavailable; manual entry remains possible.</small>'}}
 function profile(type){return ['bicycle','ebike','speed_pedelec'].includes(type)?'cycling-regular':type==='walking'?'foot-walking':'driving-car'}
 async function routeDistance(a,b,type){const cacheKey=[profile(type),...a,...b].join('|');if(state.routeCache[cacheKey])return state.routeCache[cacheKey];const r=await fetch(`${API}/route`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile:profile(type),coordinates:[a,b]})});if(!r.ok)throw new Error(r.status);const j=await r.json();const km=j.features?.[0]?.properties?.summary?.distance/1000;if(!km)throw new Error('No route');state.routeCache[cacheKey]=km;save();return km}
 async function renderFaq(){
@@ -257,6 +331,8 @@ function autoSaveSettings(){
   window.MOBUD_I18N?.setLanguage?.(state.settings.language);
   applyTheme(state.settings.theme);
   save();
+  renderDirectionLabels();
+  renderMobilityProviders();
   autosaveStatus.classList.add('visible');
   clearTimeout(autoSaveSettings.timer);
   autoSaveSettings.timer=setTimeout(()=>autosaveStatus.classList.remove('visible'),1200);
@@ -286,7 +362,7 @@ installLater?.addEventListener('click',()=>hideInstallBanner());
 window.addEventListener('appinstalled',()=>{deferredPrompt=null;hideInstallBanner()});
 if(isInstalled())hideInstallBanner();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./service-worker.js').then(reg=>{reg.addEventListener('updatefound',()=>{const w=reg.installing;w?.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller){newWorker=w;updateBanner.classList.remove('hidden')}})})});applyUpdate.onclick=async()=>{downloadBackup('before-update');toast('Safety backup downloaded. Updating MoBud…');await new Promise(r=>setTimeout(r,500));newWorker?.postMessage({type:'SKIP_WAITING'})};navigator.serviceWorker?.addEventListener('controllerchange',()=>location.reload());
-tripDate.value=expenseDate.value=todayISO();onboardLanguage.value=state.settings.language||window.MOBUD_I18N?.language||'en';window.MOBUD_I18N?.setLanguage?.(state.settings.language||window.MOBUD_I18N?.language||'en');applyTheme();fillLocations();render();checkCommuteReminder();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){checkCommuteReminder();if(state.settings.driveConnected&&sessionStorage.getItem('mobudGoogleToken')){startDriveLoops();syncWithDrive({silent:true,reason:'resume'})}}else{scheduleAutoSync(0);stopDriveLoops()}});window.addEventListener('pagehide',()=>{scheduleAutoSync(0)});if(state.settings.driveConnected&&sessionStorage.getItem('mobudGoogleToken')){syncWithDrive({silent:true,reason:'open'});startDriveLoops()}if(!state.onboardingComplete)onboarding.classList.remove('hidden');
+tripDate.value=expenseDate.value=todayISO();onboardLanguage.value=state.settings.language||window.MOBUD_I18N?.language||'en';window.MOBUD_I18N?.setLanguage?.(state.settings.language||window.MOBUD_I18N?.language||'en');applyTheme();fillLocations();renderDirectionLabels();render();checkCommuteReminder();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){checkCommuteReminder();if(state.settings.driveConnected&&sessionStorage.getItem('mobudGoogleToken')){startDriveLoops();syncWithDrive({silent:true,reason:'resume'})}}else{scheduleAutoSync(0);stopDriveLoops()}});window.addEventListener('pagehide',()=>{scheduleAutoSync(0)});if(state.settings.driveConnected&&sessionStorage.getItem('mobudGoogleToken')){syncWithDrive({silent:true,reason:'open'});startDriveLoops()}if(!state.onboardingComplete)onboarding.classList.remove('hidden');
 
 async function fetchPartnerMetadata(urlInput,prefix){const url=urlInput.value.trim();if(!url){toast('Enter a website first.');return}try{toast('Looking up public contact details…');const r=await fetch(`${API}/metadata?url=${encodeURIComponent(url)}`);if(!r.ok)throw new Error();const d=await r.json();const map={seller:['vehicleBoughtFrom','vehicleSellerPhone','vehicleSellerAddress'],lease:['vehicleLeasePartner','vehicleLeasePhone','vehicleLeaseAddress'],maintenance:['vehicleMaintenanceProvider','vehicleMaintenanceContact','vehicleMaintenanceAddress'],insurance:['vehicleInsurance','vehicleInsurancePhone','vehicleInsuranceAddress']};const ids=map[prefix];if(d.name&&!document.getElementById(ids[0]).value)document.getElementById(ids[0]).value=d.name;if(d.phone&&!document.getElementById(ids[1]).value)document.getElementById(ids[1]).value=d.phone;if(d.address&&!document.getElementById(ids[2]).value)document.getElementById(ids[2]).value=d.address;toast(d.name||d.phone||d.address?'Public details added — please verify them.':'No public contact details found.')}catch{toast('Could not retrieve public contact details. You can enter them manually.')}}
 vehicleType.addEventListener('change',()=>updatePowertrainOptions(vehicleType.value));document.querySelectorAll('[data-fetch-partner]').forEach(b=>b.addEventListener('click',()=>fetchPartnerMetadata(document.getElementById(b.dataset.urlInput),b.dataset.fetchPartner)));
