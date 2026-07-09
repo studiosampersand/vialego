@@ -218,3 +218,45 @@ select::-ms-expand{display:none}
 html[data-theme="light"] select,body[data-theme="light"] select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23626267' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E")!important;
 }
+
+/* v0.000.009 responsive hotfix: time pickers, mobile FAQ width and landscape tablets */
+input[type="time"]{
+  -webkit-appearance:none;
+  appearance:none;
+  min-height:48px;
+  padding-right:48px!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%239b9b9f' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E")!important;
+  background-repeat:no-repeat!important;
+  background-position:calc(100% - 15px) 50%!important;
+  background-size:20px 20px!important;
+  cursor:pointer;
+}
+input[type="time"]::-webkit-calendar-picker-indicator{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  opacity:0;
+  cursor:pointer;
+}
+html[data-theme="light"] input[type="time"],body[data-theme="light"] input[type="time"]{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23626267' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E")!important;
+}
+@media(max-width:620px){
+  .faq-list{width:min(100%,540px)!important;max-width:540px!important;margin-inline:auto}
+  .faq-item button>span:first-child{display:block;max-width:calc(100% - 52px)!important}
+  .faq-answer{max-width:calc(100% - 18px)!important}
+}
+@media(min-width:768px) and (max-width:1366px) and (orientation:landscape){
+  #app.app-shell{max-width:1120px!important;padding-left:26px!important;padding-right:26px!important}
+  .bottom-nav{width:min(920px,calc(100% - 48px))!important}
+  #screen-calendar.active{display:grid!important;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:18px;align-items:start}
+  #screen-calendar>.card{margin-top:0}
+  #screen-settings.active{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+  #screen-settings>.page-header{grid-column:1/-1}
+  #screen-settings>.card{margin:0;min-width:0}
+  #screen-garage .garage-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #garageList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  #garageList>.garage-card{margin:0;min-width:0}
+  .quick-vehicle-row{grid-template-columns:repeat(8,minmax(86px,1fr))}
+}

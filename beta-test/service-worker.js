@@ -1,6 +1,6 @@
-const CACHE='mobud-beta-v0-000-009-odo-chevron-1';
-const V='009';
-const ASSETS=['./','./index.html','./styles.css?v='+V,'./app.js?v='+V,'./config.js?v='+V,'./i18n.js?v='+V,'./manifest.json','./content/faq.json','./content/mobility-providers.json','./icon-192-v005.png','./icon-512-v005.png','./icon-maskable-512-v005.png'];
+const CACHE='mobud-beta-v0-000-009-responsive-2';
+const V='0092';
+const ASSETS=['./','./index.html','./styles.css?v='+V,'./app.js?v='+V,'./config.js?v='+V,'./i18n.js?v='+V,'./manifest.json','./content/faq.json','./content/mobility-providers.json','./faq/index.html','./faq/faq.css?v='+V,'./faq/faq.js?v='+V,'./icon-192-v005.png','./icon-512-v005.png','./icon-maskable-512-v005.png'];
 const STATIC_PATHS=new Set(ASSETS.map(x=>new URL(x,self.registration.scope).pathname));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('mobud-beta-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
