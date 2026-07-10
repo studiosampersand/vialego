@@ -337,3 +337,9 @@ body[data-theme="light"] input[type="time"]{
     margin:0!important;
   }
 }
+
+/* v0.000.010 PDF/mobile report polish */
+.file-actions .file-label{min-width:0;width:auto;padding:12px 14px}.file-actions .file-label:first-child{padding-left:12px;padding-right:12px}.usage-mix-values{display:inline-flex!important;align-items:baseline;gap:5px;white-space:nowrap;flex-shrink:0}.usage-mix-values small{display:inline!important}.print-brand{display:flex;align-items:center;gap:14px}.print-brand img{width:54px;height:54px;border-radius:12px}.print-brand.mini img{width:34px;height:34px}.print-report-page footer,.print-receipt-page footer{margin-top:auto;padding-top:12px;border-top:1px solid #bbb;font-size:9px;color:#555}.print-assumption{font-size:10px;color:#555}.print-report-root{display:none}@media print{.print-report-root{display:block!important;background:#fff;color:#111}.print-report-page,.print-receipt-page{min-height:100vh;page-break-after:always;display:flex;flex-direction:column;padding:18mm}.print-receipt-frame{flex:1;display:flex;align-items:center;justify-content:center}.print-receipt-frame img{max-width:100%;max-height:240mm;object-fit:contain}.print-report-page table{width:100%;border-collapse:collapse}.print-report-page th,.print-report-page td{padding:7px;border-bottom:1px solid #ccc;text-align:left}}
+
+/* v0.000.010 final receipt/action polish */
+.file-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.file-actions .file-label{display:inline-flex;width:auto;min-width:132px;justify-content:center;padding:10px 14px;flex:0 0 auto}.file-actions .file-label:first-child{min-width:132px}.file-actions .file-label:last-child{min-width:132px}.danger{background:#7d2529;color:#fff;border:1px solid #a33a40;border-radius:12px;padding:11px 15px;font-weight:700}@media(max-width:520px){.file-actions{display:grid;grid-template-columns:1fr 1fr}.file-actions .file-label{width:100%;min-width:0;margin:0}}
