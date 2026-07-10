@@ -42,6 +42,8 @@
     pl:{'Period':'Okres','Last month':'Poprzedni miesiąc','This year':'Ten rok','All':'Wszystko','From–to':'Od–do','All time':'Cały okres','Last 30 days':'Ostatnie 30 dni','Custom period':'Okres niestandardowy','Vehicle usage mix':'Podział wykorzystania pojazdów','Share of logged distance':'Udział zarejestrowanego dystansu','Share of logged distance by vehicle':'Udział zarejestrowanego dystansu według pojazdu','Log trips with Garage vehicles to see your mobility mix.':'Rejestruj przejazdy pojazdami z Garażu, aby zobaczyć swój miks mobilności.','receipt':'paragon','receipts':'paragony'}
   };
   for(const [lang,values] of Object.entries(EXTRA_V010)) Object.assign(T[lang] ||= {},values);
+  const EXTRA_REPORT_VEHICLE_FILTER={'nl':{'All vehicles':'Alle voertuigen'},'fr':{'All vehicles':'Tous les véhicules'},'de':{'All vehicles':'Alle Fahrzeuge'},'de-CH':{'All vehicles':'Alle Fahrzeuge'},'it':{'All vehicles':'Tutti i veicoli'},'es':{'All vehicles':'Todos los vehículos'},'pt':{'All vehicles':'Todos os veículos'},'da':{'All vehicles':'Alle køretøjer'},'sv':{'All vehicles':'Alla fordon'},'no':{'All vehicles':'Alle kjøretøy'},'pl':{'All vehicles':'Wszystkie pojazdy'}};
+  for(const [lang,values] of Object.entries(EXTRA_REPORT_VEHICLE_FILTER)) Object.assign(T[lang] ||= {},values);
   const english = new Set(Object.keys(T.nl));
   const nodeKeys = new WeakMap();
   const attrKeys = new WeakMap();
