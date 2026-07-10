@@ -346,3 +346,6 @@ body[data-theme="light"] input[type="time"]{
 
 /* v0.000.010 final mobile report actions hotfix */
 @media (max-width:760px), (pointer:coarse){#printReport{display:none!important}}
+
+/* v0.000.010 final screen persistence and report action alignment */
+#screen-stats .hero-actions{justify-content:flex-start!important}
