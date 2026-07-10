@@ -5,7 +5,7 @@
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Permissions-Policy" content="camera=(self), geolocation=(), microphone=(), payment=(), usb=()">
 <meta name="theme-color" content="#111111"><script>(function(){try{var keys=['mobud-beta-data-v0.000.009','mobud-beta-data-v0.000.008','mobud-beta-data-v0.000.007','mobud-beta-data-v0.000.006','mobud-beta-data-v0.000.005'];var pref='system';for(var i=0;i<keys.length;i++){var raw=localStorage.getItem(keys[i]);if(raw){var data=JSON.parse(raw);pref=(data&&data.settings&&data.settings.theme)||'system';break;}}var resolved=pref==='system'?(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):pref;document.documentElement.setAttribute('data-theme',resolved);document.documentElement.setAttribute('data-theme-preference',pref);document.documentElement.style.colorScheme=resolved;}catch(e){}})();</script><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>MoBud · v0.000.009</title><link rel="manifest" href="./manifest.json"><link rel="stylesheet" href="./styles.css?v=0096"><style id="desktop-container-hotfix">
+<title>MoBud · v0.000.010</title><link rel="manifest" href="./manifest.json"><link rel="stylesheet" href="./styles.css?v=0102"><style id="desktop-container-hotfix">
 @media (min-width:621px){
   #app.app-shell{width:100%!important;max-width:760px!important;margin-left:auto!important;margin-right:auto!important;}
 }
@@ -41,7 +41,7 @@
 
 <div id="updateBanner" class="update-banner hidden"><strong>New MoBud version available</strong><button id="applyUpdate" class="primary small">Update now</button></div>
 <div id="app" class="app-shell">
-<header class="topbar"><div><p class="brand">MoBud</p><p class="tagline"><span data-no-i18n>Track every ride. Own every kilometer.</span></p></div><div class="top-actions"><span class="version-pill">v0.000.009</span></div></header>
+<header class="topbar"><div><p class="brand">MoBud</p><p class="tagline"><span data-no-i18n>Track every ride. Own every kilometer.</span></p></div><div class="top-actions"><span class="version-pill">v0.000.010</span></div></header>
 <main>
 <section id="screen-dashboard" class="screen active">
 <div class="dashboard-intro"><p id="greeting" class="dashboard-greeting">Good morning</p><p class="muted">Track your mobility and administration.</p></div>
@@ -49,7 +49,6 @@
 <section class="dashboard-section"><div class="section-head"><h3>Quick commute</h3><span class="muted microcopy">Tap once, adjust after</span></div><div id="quickVehicles" class="quick-vehicle-row" data-tutorial="quick-log"></div></section>
 <section class="stats-strip"><div class="stat"><svg><use href="#i-road"/></svg><strong id="statKm">0</strong><span>This month</span></div><div class="stat"><svg><use href="#i-clock"/></svg><strong id="statTrips">0</strong><span>Trips</span></div><div class="stat"><svg><use href="#i-receipt"/></svg><strong id="statCost">€0</strong><span>Costs</span></div><div class="stat"><svg><use href="#i-receipt"/></svg><strong id="statReceipts">0</strong><span>Receipts</span></div></section>
 <section class="recent-section"><div class="section-head"><h3>Recent rides</h3><button id="viewAllLogs" class="text-link" data-tutorial="open-calendar">View all</button></div><div id="recentList" class="recent-list empty-state">No logs yet.</div></section>
-<div class="dashboard-links"><button class="dashboard-link" data-jump="garage"><svg><use href="#i-garage"/></svg><span><strong>Garage</strong><small>Manage vehicles</small></span></button><button class="dashboard-link" data-jump="stats"><svg><use href="#i-chart"/></svg><span><strong>Reports</strong><small>See insights</small></span></button><button class="dashboard-link" data-jump="settings"><svg><use href="#i-more"/></svg><span><strong>Settings</strong><small>Preferences</small></span></button></div>
 <div class="month-switch compact-month"><button id="prevMonth" class="ghost">‹</button><strong id="currentMonthLabel"></strong><button id="nextMonth" class="ghost">›</button></div>
 </section>
 
@@ -78,5 +77,5 @@
 <div id="tutorial" class="tutorial hidden"><div id="tutorialSpot" class="tutorial-spot"></div><div class="tutorial-card"><p id="tutorialCount" class="eyebrow"></p><h3 id="tutorialTitle"></h3><p id="tutorialText"></p><div class="modal-actions"><button id="tutorialSkip" class="ghost">Skip</button><button id="tutorialNext" class="primary">Next</button></div></div></div>
 <div id="otherDeviceModal" class="modal hidden"><div class="modal-card warning-modal"><h2>MoBud staat ook open op een ander apparaat</h2><p id="otherDeviceText">Je info staat nog open op een ander apparaat. Sluit deze eerst af voor je hier verdergaat om dataconflicten te vermijden.</p><div class="modal-actions"><button id="otherDeviceRecheck" class="secondary" type="button">Ander apparaat sluiten en opnieuw controleren</button><button id="otherDeviceContinue" class="ghost" type="button">Toch doorgaan</button></div></div></div>
 <div id="feedbackModal" class="modal hidden"><form id="feedbackForm" class="modal-card"><h2 id="feedbackTitle">Report</h2><input type="hidden" id="feedbackType"><label>Title<input id="feedbackSubject" required></label><label>Description<textarea id="feedbackDescription" rows="5" required></textarea></label><label>Severity<select id="feedbackSeverity"><option value="Cosmetic">Cosmetic</option><option value="Annoying">Annoying</option><option value="Feature unusable">Feature unusable</option><option value="Data-loss risk">Data-loss risk</option><option value="App unusable">App unusable</option></select></label><label>Email (optional)<input type="email" id="feedbackEmail"></label><label class="check"><input type="checkbox" id="feedbackContact"> You may contact me</label><p class="legal-note">Do not include addresses, receipts, vehicle identifiers or other private data.</p><div class="modal-actions"><button type="button" id="cancelFeedback" class="ghost">Cancel</button><button class="primary" type="submit">Send</button></div></form></div>
-<div id="toast" class="toast hidden"></div><script src="config.js?v=0100"></script><script src="i18n.js?v=0100"></script><script src="pdf-lib.min.js?v=0100"></script><script src="app.js?v=0100"></script>
+<div id="toast" class="toast hidden"></div><script src="config.js?v=0102"></script><script src="i18n.js?v=0102"></script><script src="pdf-lib.min.js?v=0102"></script><script src="app.js?v=0102"></script>
 </body></html>
