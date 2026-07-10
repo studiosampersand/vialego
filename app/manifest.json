@@ -8,7 +8,7 @@
   "display": "standalone",
   "background_color": "#0f0f10",
   "theme_color": "#0f0f10",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "icons": [
     {
       "src": "./icon-192-v005.png",
@@ -29,5 +29,5 @@
       "purpose": "maskable"
     }
   ],
-  "version": "0.000.008"
+  "version": "0.000.010"
 }
