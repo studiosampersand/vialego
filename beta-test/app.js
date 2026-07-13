@@ -2,7 +2,7 @@ const VERSION='0.000.016';
 const KEY='mobud-beta-data-v0.000.009';
 const RECOVERY_PREFIX='mobud-recovery-';
 const PREFERENCES_KEY=KEY.includes('beta')?'mobud-beta-preferences-v1':'mobud-production-preferences-v1';
-const LEGACY_KEYS=['mobud-beta-data-v0.000.008','mobud-beta-data-v0.000.007','mobud-beta-data-v0.000.006','mobud-beta-data-v0.000.005','vialego-beta-data-v0.000.004','mobud-beta-data-v0.000.004','vialego-data-v0.000.004','vialego-data-v0.000.003','tsumoriq-data-v0.000.001'];
+const LEGACY_KEYS=['mobud-beta-data-v0.000.008','mobud-beta-data-v0.000.007','mobud-beta-data-v0.000.006','mobud-beta-data-v0.000.005','vialego-beta-data-v0.000.004','mobud-beta-data-v0.000.004','mobud-production-data-v0.000.009','mobud-production-data-v0.000.008','mobud-production-data-v0.000.007','mobud-production-data-v0.000.006','mobud-production-data','vialego-data-v0.000.004','vialego-data-v0.000.003','tsumoriq-data-v0.000.001'];
 const APP_CONFIG=window.MOBUD_CONFIG||window.VIALEGO_CONFIG||{};
 const API=APP_CONFIG.API_BASE||'';
 const GOOGLE_CLIENT_ID=APP_CONFIG.GOOGLE_CLIENT_ID||'';
@@ -23,7 +23,7 @@ const POWERTRAIN_LABELS={not_applicable:'Not applicable',electric:'Electric',pet
 const vehicleTypeLabel=value=>t(VEHICLE_TYPE_LABELS[value]||'Other vehicle');
 const powertrainLabel=value=>t(POWERTRAIN_LABELS[value]||'Not applicable');
 const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const MAX_BACKUP_BYTES=25_000_000,MAX_ROWS=50_000,MAX_TEXT=5000,ALLOWED_ATTACHMENT_TYPES=new Set(['image/jpeg','image/png','image/webp','application/pdf']);
+const MAX_BACKUP_BYTES=150_000_000,MAX_ROWS=50_000,MAX_TEXT=5000,ALLOWED_ATTACHMENT_TYPES=new Set(['image/jpeg','image/png','image/webp','application/pdf']);
 const cleanText=(value,max=MAX_TEXT)=>String(value??'').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g,'').slice(0,max);
 const safeAttr=value=>escapeHtml(cleanText(value,300));
 function safeUrl(value,{allowHttp=false}={}){if(!value)return '';try{const u=new URL(String(value),location.origin);if(u.protocol==='https:'||(allowHttp&&u.protocol==='http:'))return u.href}catch{}return ''}
@@ -38,23 +38,34 @@ function safeParse(raw){try{return raw?JSON.parse(raw):null}catch{return null}}
 function normalized(data){const base=fresh(),d=data&&typeof data==='object'?data:{},stamp=d.syncMeta?.modifiedAt||d.exportedAt||new Date(0).toISOString();const stampRows=rows=>(Array.isArray(rows)?rows:[]).map(x=>({...x,updatedAt:x.updatedAt||x.createdAt||stamp,updatedByDevice:x.updatedByDevice||d.syncMeta?.updatedByDevice||''}));const mergedSettings={...base.settings,...(d.settings||{})};if(!Array.isArray(mergedSettings.locations))mergedSettings.locations=[];[['home2','Second address'],['home3','Third address']].forEach(([key,label])=>{if(mergedSettings[key]&&!mergedSettings.locations.some(l=>l.legacyKey===key))mergedSettings.locations.push({id:uid('location'),kind:'other',label,address:mergedSettings[key],legacyKey:key})});return {...base,...d,settings:mergedSettings,vehicles:stampRows(d.vehicles).map(v=>({...v,odometerBase:Number(v.odometerBase??v.currentOdometer??v.initialOdometer??0),odometerBaselineTripKm:Number(v.odometerBaselineTripKm??0)})),trips:stampRows(d.trips),expenses:stampRows(d.expenses),tombstones:{trips:Array.isArray(d.tombstones?.trips)?d.tombstones.trips:[],expenses:Array.isArray(d.tombstones?.expenses)?d.tombstones.expenses:[],vehicles:Array.isArray(d.tombstones?.vehicles)?d.tombstones.vehicles:[]},syncMeta:{...base.syncMeta,...(d.syncMeta||{})},addresses:d.addresses&&typeof d.addresses==='object'?d.addresses:{},routeCache:d.routeCache&&typeof d.routeCache==='object'?d.routeCache:{},parkingLocations:d.parkingLocations&&typeof d.parkingLocations==='object'?d.parkingLocations:{}}}
 function validData(d){return validateBackupShape(d)}
 function snapshot(key,raw,label='migration'){if(!raw)return null;const stamp=new Date().toISOString().replace(/[:.]/g,'-');const recoveryKey=`${RECOVERY_PREFIX}${label}-${stamp}`;try{localStorage.setItem(recoveryKey,JSON.stringify({sourceKey:key,createdAt:new Date().toISOString(),raw}));return recoveryKey}catch{return null}}
+function dataScore(d){if(!d||typeof d!=='object')return -1;const v=Array.isArray(d.vehicles)?d.vehicles.length:0,t=Array.isArray(d.trips)?d.trips.length:0,e=Array.isArray(d.expenses)?d.expenses.length:0;return (v*1000)+t+e}
+function discoverDataKeys(){const keys=new Set([KEY,...LEGACY_KEYS]);try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i)||'';if(/^(mobud|vialego|tsumoriq).*(data|backup)/i.test(k)&&!k.includes('preferences')&&!k.includes('device'))keys.add(k)}}catch{}return [...keys].filter(k=>k!==KEY)}
 function migrate(){
   const currentRaw=localStorage.getItem(KEY),current=safeParse(currentRaw);
-  if(validData(current))return normalized(current);
-  if(currentRaw)snapshot(KEY,currentRaw,'invalid-current');
-  for(const key of LEGACY_KEYS){
+  let currentValid=validData(current),currentScore=currentValid?dataScore(current):-1;
+  let bestRaw='',bestKey='',best=null,bestScore=-1;
+  for(const key of discoverDataKeys()){
     const raw=localStorage.getItem(key),old=safeParse(raw);
-    if(!validData(old)&&!(old&&Array.isArray(old.trips)&&Array.isArray(old.expenses)))continue;
-    snapshot(key,raw,'before-v004');
-    const next=normalized(old);
-    next.version=VERSION;
-    next.onboardingComplete=old.onboardingComplete!==undefined?old.onboardingComplete:true;
-    try{
-      localStorage.setItem(KEY,JSON.stringify(next));
-      const verify=safeParse(localStorage.getItem(KEY));
-      if(validData(verify)&&verify.trips.length===next.trips.length&&verify.expenses.length===next.expenses.length)return verify;
-    }catch{}
-    return normalized(old);
+    if(validData(old)||(old&&Array.isArray(old.trips)&&Array.isArray(old.expenses))){
+      const candidate=normalized(old),score=dataScore(candidate);
+      if(score>bestScore){best=candidate;bestRaw=raw;bestKey=key;bestScore=score}
+    }
+  }
+  if(currentValid&&currentScore>0)return normalized(current);
+  if(currentValid&&best&&bestScore>currentScore){
+    const next=normalized(best);next.version=VERSION;
+    if(currentRaw)snapshot(KEY,currentRaw,'empty-current-before-rescue');
+    snapshot(bestKey,bestRaw,'rescued-source');
+    try{localStorage.setItem(KEY,JSON.stringify(next));const verify=safeParse(localStorage.getItem(KEY));if(validData(verify))return verify}catch{}
+    return next;
+  }
+  if(currentValid)return normalized(current);
+  if(currentRaw)snapshot(KEY,currentRaw,'invalid-current');
+  if(best){
+    const next=normalized(best);next.version=VERSION;
+    snapshot(bestKey,bestRaw,'legacy');
+    try{localStorage.setItem(KEY,JSON.stringify(next));const verify=safeParse(localStorage.getItem(KEY));if(validData(verify))return verify}catch{}
+    return next;
   }
   return fresh();
 }
@@ -65,7 +76,7 @@ function applyTheme(pref=state.settings.theme||'system'){const resolved=pref==='
 matchMedia('(prefers-color-scheme: light)').addEventListener?.('change',()=>{if((state.settings.theme||'system')==='system')applyTheme('system')});
 let autoSyncTimer=null,syncBusy=false,suppressAutoSync=false,drivePollTimer=null,sessionHeartbeatTimer=null,lastRemoteModified='';
 function touchState(){const now=new Date().toISOString();state.version=VERSION;state.syncMeta={...(state.syncMeta||{}),modifiedAt:now,updatedByDevice:DEVICE_ID};return now}
-function save(options={}){if(!options.preserveTimestamp)touchState();const payload=JSON.stringify(state);try{localStorage.setItem(KEY,payload);const check=safeParse(localStorage.getItem(KEY));if(!validData(check)||check.trips.length!==state.trips.length||check.expenses.length!==state.expenses.length)throw new Error('Verification failed');if(!options.skipRender)render();if(!options.skipSync&&!suppressAutoSync)scheduleAutoSync();return true}catch(e){toast('Save failed. Existing data was kept. Export a backup before adding more attachments.');return false}}
+let lastSaveFailureToast=0;function save(options={}){if(!options.preserveTimestamp)touchState();const payload=JSON.stringify(state);try{localStorage.setItem(KEY,payload);const check=safeParse(localStorage.getItem(KEY));if(!validData(check)||check.trips.length!==state.trips.length||check.expenses.length!==state.expenses.length)throw new Error('Verification failed');lastSaveFailureToast=0;if(!options.skipRender)render();if(!options.skipSync&&!suppressAutoSync)scheduleAutoSync();return true}catch(e){console.warn('MoBud save failed',e);const now=Date.now();if(now-lastSaveFailureToast>12000){lastSaveFailureToast=now;toast('Save failed. Existing data was kept. Export a backup before adding more attachments.')}return false}}
 function scheduleAutoSync(delay=3000){if(!state.settings.driveConnected||!sessionStorage.getItem('mobudGoogleToken'))return;clearTimeout(autoSyncTimer);autoSyncTimer=setTimeout(()=>syncWithDrive({silent:true,reason:'local-change'}),delay)}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.add('hidden'),2600)}
 const ACTIVE_SCREEN_KEY='mobudActiveScreen';function setScreen(name){const target=document.getElementById('screen-'+name);if(!target)return;document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));target.classList.add('active');document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.screen===name));try{sessionStorage.setItem(ACTIVE_SCREEN_KEY,name)}catch{}if(name==='garage')renderGarage();if(name==='stats')renderStats();if(name==='calendar')renderCalendar();window.MOBUD_I18N?.apply?.(target)}
