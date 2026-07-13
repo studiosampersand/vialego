@@ -6,8 +6,8 @@
   "start_url": "/beta-test/",
   "scope": "/beta-test/",
   "display": "standalone",
-  "background_color": "#0f0f10",
-  "theme_color": "#0f0f10",
+  "background_color": "#f2b705",
+  "theme_color": "#f2b705",
   "orientation": "any",
   "icons": [
     {
@@ -29,5 +29,59 @@
       "purpose": "maskable"
     }
   ],
-  "version": "0.000.010"
+  "version": "0.000.016",
+  "shortcuts": [
+    {
+      "name": "Rit toevoegen",
+      "short_name": "Rit",
+      "description": "Voeg snel een rit toe",
+      "url": "/beta-test/#log-trip",
+      "icons": [
+        {
+          "src": "./icon-192-v005.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Kost of bonnetje",
+      "short_name": "Bon",
+      "description": "Voeg snel een kost of bonnetje toe",
+      "url": "/beta-test/#log-expense",
+      "icons": [
+        {
+          "src": "./icon-192-v005.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Parkeerplek opslaan",
+      "short_name": "Parkeer",
+      "description": "Sla je parkeerlocatie op",
+      "url": "/beta-test/#parking",
+      "icons": [
+        {
+          "src": "./icon-192-v005.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Rapporten openen",
+      "short_name": "Rapporten",
+      "description": "Open je MoBud rapporten",
+      "url": "/beta-test/#reports",
+      "icons": [
+        {
+          "src": "./icon-192-v005.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
 }
