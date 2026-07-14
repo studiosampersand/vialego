@@ -72,32 +72,67 @@ function validateBackupShape(d){if(!d||typeof d!=='object'||Array.isArray(d))ret
 const fresh=()=>({version:VERSION,onboardingComplete:false,settings:{name:'',currency:'€',unit:'km',home1:'',homeLabel:'Home',work:'',workLabel:'Work',backupFrequency:'never',reportFrequency:'never',notifyUpdates:false,commuteReminderMode:'never',dailyReminderTime:'19:00',weeklyReminderDay:6,weeklyReminderTime:'10:00',lastCommuteReminder:'',theme:'system',language:(window.MOBUD_I18N?.language||'en'),storageMode:'local',driveConnected:false,lastDriveSync:'',country:'BE',locations:[]},vehicles:[],trips:[],expenses:[],tombstones:{trips:[],expenses:[],vehicles:[]},syncMeta:{modifiedAt:'',settingsUpdatedAt:'',preferencesUpdatedAt:'',addressesUpdatedAt:'',updatedByDevice:DEVICE_ID,changeToken:''},addresses:{},routeCache:{},selectedDirection:'home-work'});
 function preferencePayload(){return {updatedAt:state?.syncMeta?.preferencesUpdatedAt||new Date().toISOString(),settings:{name:state?.settings?.name||'',language:state?.settings?.language||'en',currency:state?.settings?.currency||'€',unit:state?.settings?.unit||'km',theme:state?.settings?.theme||'system',country:state?.settings?.country||'BE',backupFrequency:state?.settings?.backupFrequency||'never',reportFrequency:state?.settings?.reportFrequency||'never',notifyUpdates:!!state?.settings?.notifyUpdates,commuteReminderMode:state?.settings?.commuteReminderMode||'never',dailyReminderTime:state?.settings?.dailyReminderTime||'19:00',weeklyReminderDay:Number(state?.settings?.weeklyReminderDay??6),weeklyReminderTime:state?.settings?.weeklyReminderTime||'10:00'}}}
 function persistLocalPreferences(){try{localStorage.setItem(PREFERENCES_KEY,JSON.stringify(preferencePayload()))}catch{}}
-function applyLocalPreferences(data){const saved=safeParse(localStorage.getItem(PREFERENCES_KEY));if(!saved?.settings)return data;const savedTime=Date.parse(saved.updatedAt||0)||0,currentTime=Date.parse(data?.syncMeta?.preferencesUpdatedAt||data?.syncMeta?.settingsUpdatedAt||0)||0;if(savedTime>=currentTime){data.settings={...data.settings,...saved.settings};data.syncMeta={...(data.syncMeta||{}),preferencesUpdatedAt:saved.updatedAt,settingsUpdatedAt:new Date(Math.max(savedTime,Date.parse(data?.syncMeta?.settingsUpdatedAt||0)||0)).toISOString()}}return data}
+function applyLocalPreferences(data){
+  const saved=safeParse(localStorage.getItem(PREFERENCES_KEY));
+  if(!saved?.settings)return data;
+  const savedTime=Date.parse(saved.updatedAt||0)||0,currentTime=Date.parse(data?.syncMeta?.preferencesUpdatedAt||data?.syncMeta?.settingsUpdatedAt||0)||0;
+  if(savedTime>=currentTime){
+    const next={...(data.settings||{})},src=saved.settings||{};
+    ['language','currency','unit','theme','country','backupFrequency','reportFrequency','notifyUpdates','commuteReminderMode','dailyReminderTime','weeklyReminderDay','weeklyReminderTime'].forEach(key=>{if(src[key]!==undefined&&src[key]!==null&&String(src[key])!=='')next[key]=src[key]});
+    if(hasValue(src.name)||!hasValue(next.name))next.name=src.name||next.name||'';
+    data.settings=next;
+    data.syncMeta={...(data.syncMeta||{}),preferencesUpdatedAt:saved.updatedAt,settingsUpdatedAt:new Date(Math.max(savedTime,Date.parse(data?.syncMeta?.settingsUpdatedAt||0)||0)).toISOString()}
+  }
+  return data
+}
 function safeParse(raw){try{return raw?JSON.parse(raw):null}catch{return null}}
 function normalized(data){const base=fresh(),d=data&&typeof data==='object'?data:{},stamp=d.syncMeta?.modifiedAt||d.exportedAt||new Date(0).toISOString();const stampRows=rows=>(Array.isArray(rows)?rows:[]).map(x=>({...x,updatedAt:x.updatedAt||x.createdAt||stamp,updatedByDevice:x.updatedByDevice||d.syncMeta?.updatedByDevice||''}));const mergedSettings={...base.settings,...(d.settings||{})};if(!Array.isArray(mergedSettings.locations))mergedSettings.locations=[];[['home2','Second address'],['home3','Third address']].forEach(([key,label])=>{if(mergedSettings[key]&&!mergedSettings.locations.some(l=>l.legacyKey===key))mergedSettings.locations.push({id:uid('location'),kind:'other',label,address:mergedSettings[key],legacyKey:key})});return {...base,...d,settings:mergedSettings,vehicles:stampRows(d.vehicles).map(v=>({...v,odometerBase:Number(v.odometerBase??v.currentOdometer??v.initialOdometer??0),odometerBaselineTripKm:Number(v.odometerBaselineTripKm??0)})),trips:stampRows(d.trips),expenses:stampRows(d.expenses),tombstones:{trips:Array.isArray(d.tombstones?.trips)?d.tombstones.trips:[],expenses:Array.isArray(d.tombstones?.expenses)?d.tombstones.expenses:[],vehicles:Array.isArray(d.tombstones?.vehicles)?d.tombstones.vehicles:[]},syncMeta:{...base.syncMeta,...(d.syncMeta||{})},addresses:d.addresses&&typeof d.addresses==='object'?d.addresses:{},routeCache:d.routeCache&&typeof d.routeCache==='object'?d.routeCache:{}}}
+function hasValue(value){return String(value??'').trim().length>0}
+function defaultLabel(value,kind){return !hasValue(value)||String(value).trim().toLowerCase()===(kind==='work'?'work':'home')}
+function dataFromPossibleRecovery(value){const parsed=typeof value==='string'?safeParse(value):value;if(!parsed||typeof parsed!=='object')return null;if(parsed.raw){const inner=safeParse(parsed.raw);if(inner&&typeof inner==='object')return inner}return parsed}
+function profileScore(data){const s=data?.settings||{},a=data?.addresses||{};let score=0;if(hasValue(s.name))score+=5;if(hasValue(s.home1))score+=6;if(hasValue(s.work))score+=6;if(Array.isArray(s.locations))score+=Math.min(10,s.locations.filter(l=>hasValue(l?.address)||hasValue(l?.label)).length*3);if(Object.keys(a).length)score+=Math.min(10,Object.keys(a).length*2);if(hasValue(s.homeLabel)&&!defaultLabel(s.homeLabel,'home'))score+=2;if(hasValue(s.workLabel)&&!defaultLabel(s.workLabel,'work'))score+=2;return score}
+function candidateDataSets(){const seen=new Set(),items=[];const keys=[KEY,PREFERENCES_KEY,...LEGACY_KEYS];for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i)||'';if(key.startsWith(RECOVERY_PREFIX)||key.startsWith('mobud-recovery-')||/mobud.*data|vialego.*data|tsumoriq.*data|mobud.*preferences/i.test(key))keys.push(key)}keys.forEach(key=>{if(!key||seen.has(key))return;seen.add(key);const raw=localStorage.getItem(key);const data=dataFromPossibleRecovery(raw);if(!data?.settings)return;items.push({key,data,score:profileScore(data),time:Date.parse(data.syncMeta?.settingsUpdatedAt||data.syncMeta?.addressesUpdatedAt||data.syncMeta?.modifiedAt||data.exportedAt||data.updatedAt||0)||0})});return items.filter(x=>x.score>0).sort((a,b)=>b.score-a.score||b.time-a.time)}
+function mergeProfileFields(target,source,{overwrite=false}={}){if(!source?.settings)return target;const t=target.settings||(target.settings={}),s=source.settings||{};
+  if(hasValue(s.name)&&(overwrite||!hasValue(t.name)))t.name=s.name;
+  if(hasValue(s.country)&&(overwrite||!hasValue(t.country)||t.country==='BE'))t.country=s.country;
+  if(hasValue(s.home1)&&(overwrite||!hasValue(t.home1)))t.home1=s.home1;
+  if(hasValue(s.work)&&(overwrite||!hasValue(t.work)))t.work=s.work;
+  if(hasValue(s.homeLabel)&&(overwrite||defaultLabel(t.homeLabel,'home')))t.homeLabel=s.homeLabel;
+  if(hasValue(s.workLabel)&&(overwrite||defaultLabel(t.workLabel,'work')))t.workLabel=s.workLabel;
+  if(!Array.isArray(t.locations))t.locations=[];
+  const addLoc=loc=>{if(!loc||(!hasValue(loc.address)&&!hasValue(loc.label)))return;const exists=t.locations.some(x=>(loc.id&&x.id===loc.id)||(hasValue(loc.address)&&hasValue(x.address)&&String(x.address).trim().toLowerCase()===String(loc.address).trim().toLowerCase())||(hasValue(loc.label)&&hasValue(x.label)&&String(x.label).trim().toLowerCase()===String(loc.label).trim().toLowerCase()&&hasValue(x.address)===hasValue(loc.address)));if(!exists)t.locations.push({...loc,id:loc.id||uid('location')})};
+  (Array.isArray(s.locations)?s.locations:[]).forEach(addLoc);
+  [['home2','Second address'],['home3','Third address']].forEach(([key,label])=>{if(hasValue(s[key]))addLoc({id:uid('location'),kind:'other',label,address:s[key],legacyKey:key})});
+  target.addresses=target.addresses&&typeof target.addresses==='object'?target.addresses:{};
+  const sa=source.addresses&&typeof source.addresses==='object'?source.addresses:{};
+  Object.keys(sa).forEach(key=>{if(!target.addresses[key]||!safeCoords(target.addresses[key]?.coords))target.addresses[key]=sa[key]});
+  return target
+}
+function recoverProfileFields(data){let out=normalized(data);const before=profileScore(out);for(const item of candidateDataSets()){if(item.score<=before&&before>=10)continue;out=mergeProfileFields(out,item.data,{overwrite:false})}return out}
+
 function validData(d){return validateBackupShape(d)}
 function snapshot(key,raw,label='migration'){if(!raw)return null;const stamp=new Date().toISOString().replace(/[:.]/g,'-');const recoveryKey=`${RECOVERY_PREFIX}${label}-${stamp}`;try{localStorage.setItem(recoveryKey,JSON.stringify({sourceKey:key,createdAt:new Date().toISOString(),raw}));return recoveryKey}catch{return null}}
 function migrate(){
   const currentRaw=localStorage.getItem(KEY),current=safeParse(currentRaw);
-  if(validData(current))return normalized(current);
+  if(validData(current))return recoverProfileFields(normalized(current));
   if(currentRaw)snapshot(KEY,currentRaw,'invalid-current');
   for(const key of LEGACY_KEYS){
     const raw=localStorage.getItem(key),old=safeParse(raw);
     if(!validData(old)&&!(old&&Array.isArray(old.trips)&&Array.isArray(old.expenses)))continue;
     snapshot(key,raw,'before-v004');
-    const next=normalized(old);
+    const next=recoverProfileFields(normalized(old));
     next.version=VERSION;
     next.onboardingComplete=old.onboardingComplete!==undefined?old.onboardingComplete:true;
     try{
       localStorage.setItem(KEY,JSON.stringify(next));
       const verify=safeParse(localStorage.getItem(KEY));
-      if(validData(verify)&&verify.trips.length===next.trips.length&&verify.expenses.length===next.expenses.length)return verify;
+      if(validData(verify)&&verify.trips.length===next.trips.length&&verify.expenses.length===next.expenses.length)return recoverProfileFields(verify);
     }catch{}
-    return normalized(old);
+    return next;
   }
-  return fresh();
+  return recoverProfileFields(fresh());
 }
-let state=applyLocalPreferences(migrate()),viewDate=new Date(),calendarDate=new Date(),selectedDay=todayISO(),pendingAttachment={trip:null,expense:null},deferredPrompt=null,newWorker=null,tutorialIndex=0,tripOtherCoords={from:null,to:null};
+let state=recoverProfileFields(applyLocalPreferences(migrate())),viewDate=new Date(),calendarDate=new Date(),selectedDay=todayISO(),pendingAttachment={trip:null,expense:null},deferredPrompt=null,newWorker=null,tutorialIndex=0,tripOtherCoords={from:null,to:null};
 let versionGateRequired=!!(state?.version&&state.version!==VERSION&&localStorage.getItem(VERSION_CONFIRMED_KEY)!==VERSION),versionGateBackupTaken=false,lastNonCalendarScreen='dashboard';
 let reportPeriod='year',reportCustomFrom=`${new Date().getFullYear()}-01-01`,reportCustomTo=todayISO(),reportVehicleId='all',openReportPanels=new Set();
 let addressCommitTimer=null;
@@ -563,8 +598,16 @@ function mergeState(localData,remoteData){
   const localPrefTime=time(local,'preferencesUpdatedAt'),remotePrefTime=time(remote,'preferencesUpdatedAt');
   const localAddressTime=time(local,'addressesUpdatedAt'),remoteAddressTime=time(remote,'addressesUpdatedAt');
   const preferenceKeys=['name','language','currency','unit','theme','country','backupFrequency','reportFrequency','notifyUpdates','commuteReminderMode','dailyReminderTime','weeklyReminderDay','weeklyReminderTime'];
-  if(remotePrefTime>localPrefTime)for(const key of preferenceKeys)merged.settings[key]=remote.settings[key];
-  if(remoteAddressTime>localAddressTime){for(const key of ['home1','homeLabel','work','workLabel','locations'])merged.settings[key]=remote.settings[key];merged.addresses=remote.addresses||merged.addresses}
+  if(remotePrefTime>localPrefTime){
+    for(const key of preferenceKeys){
+      const value=remote.settings[key];
+      if(key==='name'){if(hasValue(value)||!hasValue(merged.settings.name))merged.settings.name=value||merged.settings.name||''}
+      else if(value!==undefined&&value!==null&&String(value)!=='')merged.settings[key]=value;
+    }
+  }
+  if(remoteAddressTime>localAddressTime)mergeProfileFields(merged,remote,{overwrite:false});
+  else mergeProfileFields(merged,remote,{overwrite:false});
+  mergeProfileFields(merged,local,{overwrite:false})
   merged.selectedDirection=(time(remote,'settingsUpdatedAt')>time(local,'settingsUpdatedAt')?remote.selectedDirection:local.selectedDirection)||merged.selectedDirection;
   merged.routeCache={...(remote.routeCache||{}),...(local.routeCache||{})};
   merged.syncMeta={...(merged.syncMeta||{}),modifiedAt:new Date(Math.max(Date.parse(local.syncMeta?.modifiedAt||0)||0,Date.parse(remote.syncMeta?.modifiedAt||0)||0)).toISOString(),settingsUpdatedAt:new Date(Math.max(time(local,'settingsUpdatedAt'),time(remote,'settingsUpdatedAt'))).toISOString(),preferencesUpdatedAt:new Date(Math.max(localPrefTime,remotePrefTime)).toISOString(),addressesUpdatedAt:new Date(Math.max(localAddressTime,remoteAddressTime)).toISOString(),updatedByDevice:DEVICE_ID,changeToken:local.syncMeta?.changeToken||remote.syncMeta?.changeToken||''};
