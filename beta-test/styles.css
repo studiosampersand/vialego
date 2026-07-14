@@ -385,8 +385,15 @@ html[data-theme="light"] .data-trust-box{background:#fff8df!important;border-col
 .partner-actions>*{width:100%;justify-content:center;text-align:center}
 @media(max-width:620px){
   .garage-context-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-  .garage-context-actions>*{padding-left:7px!important;padding-right:7px!important;min-width:0;font-size:12px;line-height:1.15}
+  .garage-context-actions>*{padding-left:7px!important;padding-right:7px!important;min-width:0;font-size:13px;line-height:1.1}
   .partner-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .partner-actions.one{grid-template-columns:1fr}
   .partner-actions>*{min-width:0;white-space:normal}
 }
+
+
+.garage-action-label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.05;font-weight:900;white-space:normal}
+.garage-action-label strong{font-size:14px;letter-spacing:.01em}
+.garage-action-label small{font-size:12px;font-weight:800;opacity:.9}
+.garage-context-actions .secondary.small{min-height:52px;padding-top:8px!important;padding-bottom:8px!important}
+@media(max-width:620px){.garage-context-actions>*{font-size:13px!important}.garage-action-label strong{font-size:13px}.garage-action-label small{font-size:12px}.garage-context-actions .secondary.small{min-height:52px}}
