@@ -1,45 +1,14 @@
 [
-  {
-    "country": "BE",
-    "name": "SNCB/NMBS",
-    "website": "https://www.belgiantrain.be/",
-    "appUrl": "https://www.belgiantrain.be/en/travel-info/prepare-for-your-journey/use-the-sncb-app"
-  },
-  {
-    "country": "BE",
-    "name": "De Lijn",
-    "website": "https://www.delijn.be/",
-    "appUrl": "https://www.delijn.be/en/content/ontdek-de-app/"
-  },
-  {
-    "country": "BE",
-    "name": "STIB/MIVB",
-    "website": "https://www.stib-mivb.be/",
-    "appUrl": "https://www.stib-mivb.be/buy/get-moving-with-the-stib-mivb-app"
-  },
-  {
-    "country": "BE",
-    "name": "TEC",
-    "website": "https://www.letec.be/"
-  },
-  {
-    "country": "NL",
-    "name": "NS",
-    "website": "https://www.ns.nl/"
-  },
-  {
-    "country": "FR",
-    "name": "SNCF Connect",
-    "website": "https://www.sncf-connect.com/"
-  },
-  {
-    "country": "DE",
-    "name": "Deutsche Bahn",
-    "website": "https://www.bahn.de/"
-  },
-  {
-    "country": "CH",
-    "name": "SBB CFF FFS",
-    "website": "https://www.sbb.ch/"
-  }
+  {"country":"BE","category":"Public transport","name":"SNCB/NMBS","website":"https://www.belgiantrain.be/","appUrl":"https://www.belgiantrain.be/en/travel-info/prepare-for-your-journey/use-the-sncb-app"},
+  {"country":"BE","category":"Public transport","name":"De Lijn","website":"https://www.delijn.be/","appUrl":"https://www.delijn.be/en/content/ontdek-de-app/"},
+  {"country":"BE","category":"Public transport","name":"STIB/MIVB","website":"https://www.stib-mivb.be/","appUrl":"https://www.stib-mivb.be/buy/get-moving-with-the-stib-mivb-app"},
+  {"country":"BE","category":"Public transport","name":"TEC","website":"https://www.letec.be/"},
+  {"country":"BE","category":"Shared mobility","name":"Cambio","website":"https://www.cambio.be/"},
+  {"country":"BE","category":"Shared mobility","name":"Poppy","website":"https://poppy.be/"},
+  {"country":"BE","category":"Mobility platform","name":"Olympus Mobility","website":"https://www.olympus-mobility.com/"},
+  {"country":"BE","category":"Mobility platform","name":"Mbrella","website":"https://www.mbrella.eu/"},
+  {"country":"NL","category":"Public transport","name":"NS","website":"https://www.ns.nl/"},
+  {"country":"FR","category":"Public transport","name":"SNCF Connect","website":"https://www.sncf-connect.com/"},
+  {"country":"DE","category":"Public transport","name":"Deutsche Bahn","website":"https://www.bahn.de/"},
+  {"country":"CH","category":"Public transport","name":"SBB CFF FFS","website":"https://www.sbb.ch/"}
 ]
