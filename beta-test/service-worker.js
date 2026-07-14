@@ -1,5 +1,5 @@
-const CACHE='mobud-beta-v0.000.016-final-safe-0171';
-const V='0171';
+const CACHE='mobud-beta-v0.000.016-final-safe-0172';
+const V='0172';
 const ASSETS=['./','./index.html','./styles.css?v='+V,'./app.js?v='+V,'./config.js?v='+V,'./i18n.js?v='+V,'./pdf-lib.min.js?v='+V,'./manifest.json','./content/faq.json','./content/mobility-providers.json','./faq/index.html','./faq/faq.css?v='+V,'./faq/faq.js?v='+V,'./icon-192-v005.png','./icon-512-v005.png','./icon-maskable-512-v005.png'];
 const STATIC_PATHS=new Set(ASSETS.map(x=>new URL(x,self.registration.scope).pathname));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS))));

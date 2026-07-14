@@ -408,3 +408,38 @@ html[data-theme="light"] .data-trust-box{background:#fff8df!important;border-col
     font-size: 13px !important;
   }
 }
+
+
+/* v0.000.016 hotfix 0172 — force mobile garage action typography parity */
+#screen-garage .garage-card button,
+#screen-garage .garage-card .secondary,
+#screen-garage .garage-card .ghost,
+#screen-garage .garage-card .danger,
+#screen-garage .garage-card .link-btn {
+  font-size: 14px !important;
+  line-height: 1.28 !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em;
+}
+#screen-garage .garage-card .small,
+#screen-garage .garage-card button.small {
+  font-size: 14px !important;
+  line-height: 1.28 !important;
+}
+#screen-garage .garage-context-actions > button,
+#screen-garage .partner-actions > button {
+  min-height: 48px;
+}
+#screen-garage .mini-actions > button {
+  min-height: 36px;
+}
+@media(max-width:620px){
+  #screen-garage .garage-card button,
+  #screen-garage .garage-card .secondary,
+  #screen-garage .garage-card .ghost,
+  #screen-garage .garage-card .danger,
+  #screen-garage .garage-card .link-btn {
+    font-size: 14px !important;
+    line-height: 1.28 !important;
+  }
+}
