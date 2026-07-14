@@ -61,22 +61,6 @@
   };
   for(const [lang,values] of Object.entries(EXTRA_FINAL_016_SAFE)) Object.assign(T[lang] ||= {},values);
 
-
-  const EXTRA_ACTION_LABELS_0175={
-    nl:{'Trip action label top':'Rit','Receipt action label top':'Bonnetje','Parking action label top':'Parkeerplek','Add action label bottom':'toevoegen','Save action label bottom':'opslaan'},
-    en:{'Trip action label top':'Trip','Receipt action label top':'Receipt','Parking action label top':'Parking','Add action label bottom':'add','Save action label bottom':'save'},
-    fr:{'Trip action label top':'Trajet','Receipt action label top':'Justificatif','Parking action label top':'Stationnement','Add action label bottom':'ajouter','Save action label bottom':'enregistrer'},
-    de:{'Trip action label top':'Fahrt','Receipt action label top':'Beleg','Parking action label top':'Parkplatz','Add action label bottom':'hinzufügen','Save action label bottom':'speichern'},
-    'de-CH':{'Trip action label top':'Fahrt','Receipt action label top':'Beleg','Parking action label top':'Parkplatz','Add action label bottom':'hinzufügen','Save action label bottom':'speichern'},
-    it:{'Trip action label top':'Viaggio','Receipt action label top':'Ricevuta','Parking action label top':'Parcheggio','Add action label bottom':'aggiungi','Save action label bottom':'salva'},
-    es:{'Trip action label top':'Trayecto','Receipt action label top':'Recibo','Parking action label top':'Aparcamiento','Add action label bottom':'añadir','Save action label bottom':'guardar'},
-    pt:{'Trip action label top':'Viagem','Receipt action label top':'Recibo','Parking action label top':'Estacionamento','Add action label bottom':'adicionar','Save action label bottom':'guardar'},
-    da:{'Trip action label top':'Tur','Receipt action label top':'Kvittering','Parking action label top':'Parkering','Add action label bottom':'tilføj','Save action label bottom':'gem'},
-    sv:{'Trip action label top':'Resa','Receipt action label top':'Kvitto','Parking action label top':'Parkering','Add action label bottom':'lägg till','Save action label bottom':'spara'},
-    no:{'Trip action label top':'Tur','Receipt action label top':'Kvittering','Parking action label top':'Parkering','Add action label bottom':'legg til','Save action label bottom':'lagre'}
-  };
-  for(const [lang,values] of Object.entries(EXTRA_ACTION_LABELS_0175)) Object.assign(T[lang] ||= {},values);
-
   const english = new Set(Object.keys(T.nl));
   const nodeKeys = new WeakMap();
   const attrKeys = new WeakMap();

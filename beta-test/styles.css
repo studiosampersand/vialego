@@ -357,43 +357,54 @@ body[data-theme="light"] input[type="time"]{
 /* v0.000.016 safe feature update */
 body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;background:radial-gradient(circle at 16% 0%,rgba(255,211,77,.22),transparent 34%),radial-gradient(circle at 90% 10%,rgba(255,157,28,.16),transparent 28%),linear-gradient(180deg,rgba(255,211,77,.08),transparent 38%)}
 .update-banner p{margin:4px 0 10px;color:var(--muted);font-size:13px}.retired-reminder-controls{display:none!important}.data-trust-box{border:1px solid rgba(255,211,77,.35);background:rgba(255,211,77,.08);border-radius:16px;padding:14px;margin:12px 0}.data-trust-box p{margin:6px 0 0;color:var(--muted)}
-.refined-garage-card{display:grid;gap:14px}.garage-card-head{align-items:flex-start}.odometer-highlight{border:1px solid var(--line);border-radius:18px;padding:14px;background:rgba(255,255,255,.045)}.odometer-highlight small{display:block;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.05em}.odometer-highlight strong{font-size:24px}.vehicle-month-summary>small{display:block;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px}.vehicle-month-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.vehicle-month-cards button{text-align:left;border:1px solid var(--line);border-radius:18px;padding:12px;background:rgba(255,255,255,.055);color:inherit}.vehicle-month-cards button strong{display:block;font-size:20px;margin:0 0 4px}.vehicle-month-cards button span{color:var(--muted);font-size:12px}.garage-context-actions,.partner-actions,.mini-actions{display:flex;gap:8px;flex-wrap:wrap}.parking-strip{border:1px dashed rgba(255,211,77,.45);border-radius:16px;padding:12px;background:rgba(255,211,77,.07)}.parking-strip strong,.parking-strip small{display:block}.parking-strip small{color:var(--muted);margin:3px 0 8px}.inactive-vehicles{margin-top:16px}.inactive-vehicles summary{cursor:pointer;padding:14px;border:1px solid var(--line);border-radius:16px;font-weight:800}.inactive-vehicle-card{opacity:.82}.danger-zone{border-top:1px solid var(--line);padding-top:12px}.log-row{border-left:4px solid transparent}.log-trip{border-left-color:#ffd34d}.log-receipt{border-left-color:#9b9b9f}.log-combo{border-left-color:#ff9d1c}.cal-day.cal-trip{box-shadow:inset 0 -4px 0 #ffd34d}.cal-day.cal-receipt{box-shadow:inset 0 -4px 0 #9b9b9f}.cal-day.cal-combo{box-shadow:inset 0 -4px 0 #ff9d1c}.reminder-card{position:relative}.modal-x{position:absolute;right:14px;top:10px;border:0;background:transparent;color:inherit;font-size:28px;line-height:1;cursor:pointer}.local-reminder-info ul{padding-left:20px}
-@media(max-width:620px){.vehicle-month-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.vehicle-month-cards button{padding:10px 6px;text-align:center;border-radius:14px}.vehicle-month-cards button strong{font-size:17px}.vehicle-month-cards button span{font-size:10px;line-height:1.15}.garage-context-actions>*{flex:1 1 100%}.partner-actions>*{flex:1 1 100%}}
+.refined-garage-card{display:grid;gap:14px}.garage-card-head{align-items:flex-start}.odometer-highlight{border:1px solid var(--line);border-radius:18px;padding:14px;background:rgba(255,255,255,.045)}.odometer-highlight small{display:block;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.05em}.odometer-highlight strong{font-size:24px}.vehicle-month-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.vehicle-month-cards button{text-align:left;border:1px solid var(--line);border-radius:18px;padding:12px;background:rgba(255,255,255,.055);color:inherit}.vehicle-month-cards button strong{display:block;font-size:20px;margin:4px 0}.vehicle-month-cards button small,.vehicle-month-cards button span{color:var(--muted);font-size:12px}.garage-context-actions,.partner-actions,.mini-actions{display:flex;gap:8px;flex-wrap:wrap}.parking-strip{border:1px dashed rgba(255,211,77,.45);border-radius:16px;padding:12px;background:rgba(255,211,77,.07)}.parking-strip strong,.parking-strip small{display:block}.parking-strip small{color:var(--muted);margin:3px 0 8px}.inactive-vehicles{margin-top:16px}.inactive-vehicles summary{cursor:pointer;padding:14px;border:1px solid var(--line);border-radius:16px;font-weight:800}.inactive-vehicle-card{opacity:.82}.danger-zone{border-top:1px solid var(--line);padding-top:12px}.log-row{border-left:4px solid transparent}.log-trip{border-left-color:#ffd34d}.log-receipt{border-left-color:#9b9b9f}.log-combo{border-left-color:#ff9d1c}.cal-day.cal-trip{box-shadow:inset 0 -4px 0 #ffd34d}.cal-day.cal-receipt{box-shadow:inset 0 -4px 0 #9b9b9f}.cal-day.cal-combo{box-shadow:inset 0 -4px 0 #ff9d1c}.reminder-card{position:relative}.modal-x{position:absolute;right:14px;top:10px;border:0;background:transparent;color:inherit;font-size:28px;line-height:1;cursor:pointer}.local-reminder-info ul{padding-left:20px}
+@media(max-width:620px){.vehicle-month-cards{grid-template-columns:1fr}.garage-context-actions>*{flex:1 1 100%}.partner-actions>*{flex:1 1 100%}}
 html[data-theme="light"] .data-trust-box{background:#fff8df!important;border-color:#f2cf58!important}html[data-theme="light"] .vehicle-month-cards button,html[data-theme="light"] .odometer-highlight{background:#fff!important}
 
 /* v0.000.016 final beta polish */
 .vehicle-default-block{display:block;width:max-content;margin-top:7px}.calendar-back{margin-bottom:12px}.support-card{margin:18px 0;padding:2px 0 10px;background:transparent;border:0;box-shadow:none}.support-card .link-btn{margin-top:8px}.update-check-card{border-style:dashed}.modal-card button:disabled{opacity:.45;cursor:not-allowed}.quick-trip-modal .modal-card{max-width:520px}.vehicle-month-cards button:hover,.analysis-toggle:hover{border-color:var(--accent);box-shadow:0 0 0 1px rgba(255,157,28,.18)}
 
-/* v0.000.016 storage-safe indicator polish */
-.log-main small{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.log-badge{display:inline-flex;align-items:center;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900;line-height:1;text-transform:uppercase;letter-spacing:.035em;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:var(--text)}
-.log-badge-combo{background:rgba(255,157,28,.18);border-color:rgba(255,157,28,.48);color:#ffb24a}
-.log-badge-receipt{background:rgba(155,155,159,.16);border-color:rgba(155,155,159,.5);color:#d7d7dc}
-.log-badge-cost{background:rgba(255,211,77,.13);border-color:rgba(255,211,77,.42);color:#ffd34d}
-.cal-day{position:relative;overflow:hidden}
-.cal-kind-pill{position:absolute;right:4px;bottom:4px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.16);font-size:8px;font-style:normal;font-weight:900;line-height:17px;color:var(--text)}
-.cal-day.cal-trip .cal-kind-pill{background:rgba(255,211,77,.20);border-color:rgba(255,211,77,.55);color:#ffd34d}
-.cal-day.cal-receipt .cal-kind-pill{background:rgba(155,155,159,.22);border-color:rgba(155,155,159,.55);color:#e4e4e8}
-.cal-day.cal-combo .cal-kind-pill{background:rgba(255,157,28,.22);border-color:rgba(255,157,28,.6);color:#ffb24a}
 
-
-/* v0.000.016 garage action layout hotfix */
-.garage-context-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.garage-context-actions>*{width:100%;justify-content:center;text-align:center}
-.partner-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.partner-actions.one{grid-template-columns:1fr}
-.partner-actions>*{width:100%;justify-content:center;text-align:center}
-@media(max-width:620px){
-  .garage-context-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-  .garage-context-actions>*{padding-left:7px!important;padding-right:7px!important;min-width:0;font-size:13px;line-height:1.1}
-  .partner-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-  .partner-actions.one{grid-template-columns:1fr}
-  .partner-actions>*{min-width:0;white-space:normal}
+/* v0.000.016 hotfix 0171 — Garage button typography consistency */
+#screen-garage .garage-card .mini-actions button,
+#screen-garage .garage-card .garage-context-actions button,
+#screen-garage .garage-card .partner-actions button,
+#screen-garage .garage-card .danger-zone button,
+#screen-garage .garage-card .parking-strip button,
+#screen-garage .garage-card .secondary,
+#screen-garage .garage-card .ghost,
+#screen-garage .garage-card .danger,
+#screen-garage .garage-card .link-btn {
+  font-size: 13px !important;
+  line-height: 1.22 !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em;
+  text-align: center;
 }
-
-
-.garage-action-label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.05;font-weight:900;white-space:normal}
-.garage-action-label strong{font-size:14px;letter-spacing:.01em}
-.garage-action-label small{font-size:12px;font-weight:800;opacity:.9}
-.garage-context-actions .secondary.small{min-height:52px;padding-top:8px!important;padding-bottom:8px!important}
-@media(max-width:620px){.garage-context-actions>*{font-size:13px!important}.garage-action-label strong{font-size:13px}.garage-action-label small{font-size:12px}.garage-context-actions .secondary.small{min-height:52px}}
+#screen-garage .garage-card .small,
+#screen-garage .garage-card button.small {
+  font-size: 13px !important;
+  line-height: 1.22 !important;
+  padding: 9px 12px !important;
+}
+#screen-garage .garage-context-actions > *,
+#screen-garage .partner-actions > * {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: normal;
+}
+#screen-garage .mini-actions > * {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+@media(max-width:620px){
+  #screen-garage .garage-card .mini-actions button,
+  #screen-garage .garage-card .garage-context-actions button,
+  #screen-garage .garage-card .partner-actions button {
+    font-size: 13px !important;
+  }
+}
