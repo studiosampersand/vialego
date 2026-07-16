@@ -1,5 +1,50 @@
 [
   {
+    "id": "drive-automatic-sync",
+    "question": {
+      "nl": "Synchroniseert MoBud automatisch met Google Drive?",
+      "en": "Does MoBud sync automatically with Google Drive?",
+      "fr": "MoBud se synchronise-t-il automatiquement avec Google Drive ?",
+      "de": "Synchronisiert MoBud automatisch mit Google Drive?"
+    },
+    "answer": {
+      "nl": "Nee. MoBud bewaart je gegevens lokaal. Je kiest zelf wanneer je een Google Drive-back-up maakt of importeert. Dit beperkt langdurige accounttoegang en voorkomt dat een tijdelijke Drive-fout je lokale gegevens beïnvloedt.",
+      "en": "No. MoBud stores your data locally. You choose when to create or import a Google Drive backup.",
+      "fr": "Non. MoBud conserve vos données localement. Vous choisissez quand créer ou importer une sauvegarde Google Drive.",
+      "de": "Nein. MoBud speichert deine Daten lokal. Du entscheidest, wann du ein Google-Drive-Backup erstellst oder importierst."
+    }
+  },
+  {
+    "id": "drive-login-each-time",
+    "question": {
+      "nl": "Waarom moet ik mij opnieuw aanmelden voor een Drive-back-up?",
+      "en": "Why do I sign in again for a Drive backup?",
+      "fr": "Pourquoi dois-je me reconnecter pour une sauvegarde Drive ?",
+      "de": "Warum muss ich mich für ein Drive-Backup erneut anmelden?"
+    },
+    "answer": {
+      "nl": "MoBud houdt bewust geen permanente Google Drive-sessie actief. Je verleent alleen tijdelijk toegang wanneer je zelf op ‘Back-up maken’ of ‘Back-up importeren’ drukt. Na de handeling blijft MoBud lokaal werken.",
+      "en": "MoBud deliberately keeps no permanent Google Drive session. Access is temporary and only requested for Backup or Import.",
+      "fr": "MoBud ne maintient aucune session Google Drive permanente. L’accès est temporaire lors d’une sauvegarde ou d’un import.",
+      "de": "MoBud hält keine dauerhafte Google-Drive-Sitzung offen. Zugriff wird nur vorübergehend für Backup oder Import angefordert."
+    }
+  },
+  {
+    "id": "drive-multi-device-merge",
+    "question": {
+      "nl": "Wat als ik op meerdere toestellen wijzigingen heb gemaakt?",
+      "en": "What if I changed data on multiple devices?",
+      "fr": "Que se passe-t-il si j’ai modifié des données sur plusieurs appareils ?",
+      "de": "Was passiert bei Änderungen auf mehreren Geräten?"
+    },
+    "answer": {
+      "nl": "Bij een Drive-back-up of import vergelijkt MoBud de lokale gegevens met de Drive-versie. Nieuwe records worden behouden en recente wijzigingen worden samengevoegd waar mogelijk. Je krijgt eerst een overzicht.",
+      "en": "During backup or import, MoBud compares local data with the Drive version and merges records where possible.",
+      "fr": "MoBud compare les données locales à la version Drive et les fusionne lorsque possible.",
+      "de": "MoBud vergleicht lokale Daten mit der Drive-Version und führt sie soweit möglich zusammen."
+    }
+  },
+  {
     "id": "public-install",
     "category": "getting-started",
     "question": {

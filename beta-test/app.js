@@ -1,4 +1,4 @@
-const VERSION='0.000.020';
+const VERSION='0.000.023';
 const KEY='mobud-beta-data-v0.000.009';
 const RECOVERY_PREFIX='mobud-recovery-';
 const PREFERENCES_KEY=KEY.includes('beta')?'mobud-beta-preferences-v1':'mobud-production-preferences-v1';
@@ -151,7 +151,7 @@ matchMedia('(prefers-color-scheme: light)').addEventListener?.('change',()=>{if(
 let autoSyncTimer=null,syncBusy=false,suppressAutoSync=false,drivePollTimer=null,sessionHeartbeatTimer=null,lastRemoteModified='',quickSelectedVehicleId='';
 function touchState(){const now=new Date().toISOString();state.version=VERSION;state.syncMeta={...(state.syncMeta||{}),modifiedAt:now,updatedByDevice:DEVICE_ID};return now}
 let lastSaveFailureToast=0;function save(options={}){if(!options.preserveTimestamp)touchState();const payload=JSON.stringify(state);try{localStorage.setItem(KEY,payload);const check=safeParse(localStorage.getItem(KEY));if(!validData(check)||check.trips.length!==state.trips.length||check.expenses.length!==state.expenses.length)throw new Error('Verification failed');if(!options.skipRender)render();if(!options.skipSync&&!suppressAutoSync)scheduleAutoSync();return true}catch(e){console.warn('MoBud save failed',e);if(Date.now()-lastSaveFailureToast>12000){lastSaveFailureToast=Date.now();toast('Save failed. Existing data was kept. Export a backup before adding more attachments.')}return false}}
-function scheduleAutoSync(delay=3000){if(!state.settings.driveConnected)return;clearTimeout(autoSyncTimer);autoSyncTimer=setTimeout(()=>syncWithDrive({silent:true,reason:'local-change'}),delay)}
+function scheduleAutoSync(){/* Manual Google Drive backup/import only. */}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.add('hidden'),2600)}
 function showVersionSafetyGate(){
   if(!versionGateRequired||document.getElementById('versionSafetyGate'))return;
@@ -283,10 +283,17 @@ function renderTripStops(){
 }
 function addTripStop(stop={}){tripStops.push({id:stop.id||uid('stop'),location:stop.location||'other',text:stop.text||'',coords:safeCoords(stop.coords)||null});renderTripStops()}
 function moveTripStop(id,delta){const i=tripStops.findIndex(s=>s.id===id),j=i+delta;if(i<0||j<0||j>=tripStops.length)return;[tripStops[i],tripStops[j]]=[tripStops[j],tripStops[i]];renderTripStops()}
+const tripStopSearchTimers=new Map();
+function queueTripStopSearch(id,value){
+  const stop=tripStops.find(s=>s.id===id);if(!stop)return;
+  stop.text=value;stop.coords=null;renderTripRoutePreview();
+  clearTimeout(tripStopSearchTimers.get(id));
+  tripStopSearchTimers.set(id,setTimeout(()=>{tripStopSearchTimers.delete(id);searchTripStopOther(id,value)},300));
+}
 function bindTripStopControls(){
   const list=document.getElementById('tripStopsList');if(!list)return;
   list.querySelectorAll('[data-stop-location]').forEach(sel=>sel.onchange=()=>{const stop=tripStops.find(s=>s.id===sel.dataset.stopLocation);if(!stop)return;stop.location=sel.value;if(sel.value!=='other'){stop.text='';stop.coords=null}renderTripStops()});
-  list.querySelectorAll('[data-stop-other]').forEach(input=>{const stop=tripStops.find(s=>s.id===input.dataset.stopOther);if(!stop)return;input.oninput=debounceInput(value=>searchTripStopOther(stop.id,value));});
+  list.querySelectorAll('[data-stop-other]').forEach(input=>{const id=input.dataset.stopOther;input.oninput=()=>queueTripStopSearch(id,input.value);});
   list.querySelectorAll('[data-remove-stop]').forEach(b=>b.onclick=()=>{tripStops=tripStops.filter(s=>s.id!==b.dataset.removeStop);renderTripStops()});
   list.querySelectorAll('[data-stop-up]').forEach(b=>b.onclick=()=>moveTripStop(b.dataset.stopUp,-1));
   list.querySelectorAll('[data-stop-down]').forEach(b=>b.onclick=()=>moveTripStop(b.dataset.stopDown,1));
@@ -299,9 +306,24 @@ function bindTripStopControls(){
   })
 }
 async function searchTripStopOther(id,text){
-  const stop=tripStops.find(s=>s.id===id),box=document.querySelector(`[data-stop-suggestions="${CSS.escape(id)}"]`);if(!stop||!box)return;stop.coords=null;stop.text=text;
-  if(text.trim().length<3){box.innerHTML='';renderTripRoutePreview();return}
-  try{const features=(await fetchGeocodeFeatures(text)).slice(0,5);box._features=features;box.innerHTML=features.length?features.map((f,i)=>`<button type="button" class="ghost small" data-stop-suggestion="${safeAttr(id)}" data-index="${i}">${escapeHtml(f.properties?.label||'Address')}</button>`).join(''):`<small class="muted">${t('Address not found. Try adding a postcode or pin your current location.')}</small>`;box.querySelectorAll('[data-stop-suggestion]').forEach(b=>b.onclick=()=>{const f=box._features[Number(b.dataset.index)];if(!f)return;stop.text=cleanText(f.properties?.label||text,500);stop.coords=safeCoords(f.geometry?.coordinates);box.innerHTML='';renderTripStops();toast(t('Address selected'))})}catch{box.innerHTML=`<small class="muted">${t('Address search unavailable; enter the distance manually.')}</small>`}
+  const stop=tripStops.find(s=>s.id===id);if(!stop)return;
+  const query=String(text||'').trim();
+  let box=document.querySelector(`[data-stop-suggestions="${CSS.escape(id)}"]`);
+  if(!box)return;
+  if(query.length<3){box.innerHTML='';return}
+  const requestId=secureId('stopsearch');stop.searchRequestId=requestId;
+  box.innerHTML=`<small class="muted">${t('Searching…')}</small>`;
+  try{
+    const features=(await fetchGeocodeFeatures(query)).slice(0,5);
+    const currentStop=tripStops.find(s=>s.id===id);
+    if(!currentStop||currentStop.searchRequestId!==requestId||String(currentStop.text||'').trim()!==query)return;
+    box=document.querySelector(`[data-stop-suggestions="${CSS.escape(id)}"]`);if(!box)return;
+    box._features=features;
+    box.innerHTML=features.length?features.map((f,i)=>`<button type="button" class="ghost small" data-stop-suggestion="${safeAttr(id)}" data-index="${i}">${escapeHtml(f.properties?.label||'Address')}</button>`).join(''):`<small class="muted">${t('Address not found. Try adding a postcode or pin your current location.')}</small>`;
+    box.querySelectorAll('[data-stop-suggestion]').forEach(b=>b.onclick=()=>{const liveStop=tripStops.find(s=>s.id===id),f=box._features?.[Number(b.dataset.index)];if(!liveStop||!f)return;liveStop.text=cleanText(f.properties?.label||query,500);liveStop.coords=safeCoords(f.geometry?.coordinates);delete liveStop.searchRequestId;renderTripStops();toast(t('Address selected'))})
+  }catch{
+    box=document.querySelector(`[data-stop-suggestions="${CSS.escape(id)}"]`);if(box)box.innerHTML=`<small class="muted">${t('Address search unavailable; enter the distance manually.')}</small>`
+  }
 }
 function buildTripLegs(points,distances=[]){
   const legs=[];
@@ -678,7 +700,7 @@ function finishOnboardingFlow(){state.onboardingComplete=true;state.settings.nam
 const DRIVE_BACKUP_NAME='mobud-sync.json';
 const DRIVE_MANUAL_PREFIX='mobud-manual-backup-';
 const DRIVE_SESSION_PREFIX='mobud-session-';
-async function driveFetch(url,options={}){const token=sessionStorage.getItem('mobudGoogleToken');if(!token)throw new Error('NO_TOKEN');const headers=new Headers(options.headers||{});headers.set('Authorization',`Bearer ${token}`);const response=await fetch(url,{...options,headers});if(response.status===401){sessionStorage.removeItem('mobudGoogleToken');stopDriveLoops()}return response}
+async function driveFetch(url,options={}){const token=sessionStorage.getItem('mobudGoogleToken');if(!token)throw new Error('NO_TOKEN');const headers=new Headers(options.headers||{});headers.set('Authorization',`Bearer ${token}`);const response=await fetch(url,{...options,headers});if(response.status===401){sessionStorage.removeItem('mobudGoogleToken');sessionStorage.setItem('mobudDriveReconnectNeeded','1');stopDriveLoops()}return response}
 async function listDriveFiles(query,fields='files(id,name,modifiedTime)'){const q=encodeURIComponent(query);const r=await driveFetch(`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${q}&fields=${encodeURIComponent(fields)}&pageSize=100`);if(!r.ok)throw new Error(`Drive list failed (${r.status})`);return (await r.json()).files||[]}
 async function findDriveFile(name){const files=await listDriveFiles(`name='${name.replaceAll("'","\\'")}' and 'appDataFolder' in parents and trashed=false`);return files.sort((a,b)=>String(b.modifiedTime).localeCompare(String(a.modifiedTime)))[0]||null}
 async function downloadDriveJson(fileId){const r=await driveFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?alt=media`);if(!r.ok)throw new Error(`Drive download failed (${r.status})`);const text=await r.text();if(text.length>MAX_BACKUP_BYTES)throw new Error('Drive backup too large');const data=JSON.parse(text);if(!validData(data))throw new Error('Invalid Drive backup');return data}
@@ -737,26 +759,67 @@ async function requestGoogleToken(promptValue=''){
   })
 }
 async function ensureGoogleDriveToken({interactive=false}={}){
-  const existing=sessionStorage.getItem('mobudGoogleToken');if(existing)return existing;
-  if(!state.settings.driveConnected&&!interactive)return '';
-  const token=await requestGoogleToken(interactive?'consent':'');
-  if(token)return token;
-  if(interactive)toast('Google Drive connection was cancelled.');
+  const existing=sessionStorage.getItem('mobudGoogleToken');
+  if(existing)return existing;
+  // Automatic sync may never open a Google account or consent popup.
+  // A new token is requested only after an explicit user action.
+  if(!interactive)return '';
+  const token=await requestGoogleToken('');
+  if(token){sessionStorage.removeItem('mobudDriveReconnectNeeded');return token}
+  sessionStorage.setItem('mobudDriveReconnectNeeded','1');
+  toast('Google Drive connection was cancelled.');
   return '';
 }
-async function linkGoogleDrive(){if(!GOOGLE_CLIENT_ID){toast('Add the Google OAuth Client ID to config.js first.');return}if(!window.google?.accounts?.oauth2){toast('Google sign-in is not ready yet. Reload and try again.');return}const token=await ensureGoogleDriveToken({interactive:true});if(!token)return;state.settings.driveConnected=true;state.settings.storageMode='drive';state.syncMeta.settingsUpdatedAt=new Date().toISOString();save({skipSync:true});await syncWithDrive({silent:false,reason:'connected'});startDriveLoops()}
-async function syncWithDrive({silent=false,reason='manual'}={}){if(syncBusy)return;const token=await ensureGoogleDriveToken({interactive:false});if(!token){if(!silent)toast(t('Could not get Google Drive access. Re-link Google Drive to continue.'));return}syncBusy=true;try{if(!silent)toast('Synchronising with Google Drive…');const existing=await findDriveFile(DRIVE_BACKUP_NAME);let merged=normalized(state);if(existing){lastRemoteModified=existing.modifiedTime||lastRemoteModified;const remote=await downloadDriveJson(existing.id);merged=mergeState(state,remote);suppressAutoSync=true;state=merged;state.settings.lastDriveSync=new Date().toLocaleString();save({skipSync:true,preserveTimestamp:true});suppressAutoSync=false;await uploadDriveJson(DRIVE_BACKUP_NAME,buildBackupPayload(),existing.id)}else{await uploadDriveJson(DRIVE_BACKUP_NAME,buildBackupPayload())}state.settings.lastDriveSync=new Date().toLocaleString();save({skipSync:true,preserveTimestamp:true});await updateSessionHeartbeat();await checkOtherActiveSessions();if(!silent)toast('Google Drive is up to date.')}catch(error){console.error(error);if(!silent)toast('Google Drive sync failed. Your local data was kept.')}finally{syncBusy=false;if(!isEditingAddressSettings())renderSettings()}}
-async function getDriveStartPageToken(){const r=await driveFetch('https://www.googleapis.com/drive/v3/changes/startPageToken?spaces=appDataFolder');if(!r.ok)throw new Error(`Drive token failed (${r.status})`);return (await r.json()).startPageToken||''}
-async function getDriveChanges(pageToken){const fields=encodeURIComponent('nextPageToken,newStartPageToken,changes(fileId,removed,file(id,name,modifiedTime,trashed))');const r=await driveFetch(`https://www.googleapis.com/drive/v3/changes?pageToken=${encodeURIComponent(pageToken)}&spaces=appDataFolder&includeRemoved=true&fields=${fields}`);if(!r.ok)throw new Error(`Drive changes failed (${r.status})`);return r.json()}
-async function pollDriveChanges(){if(document.visibilityState!=='visible'||syncBusy||!state.settings.driveConnected||!sessionStorage.getItem('mobudGoogleToken'))return;try{let token=state.syncMeta?.changeToken;if(!token){token=await getDriveStartPageToken();state.syncMeta.changeToken=token;save({skipSync:true,preserveTimestamp:true});await updateSessionHeartbeat();await checkOtherActiveSessions();return}let changed=false,pageToken=token;do{const result=await getDriveChanges(pageToken);changed=changed||(result.changes||[]).some(change=>change.file?.name===DRIVE_BACKUP_NAME);pageToken=result.nextPageToken||'';if(result.newStartPageToken){state.syncMeta.changeToken=result.newStartPageToken;save({skipSync:true,preserveTimestamp:true})}}while(pageToken);if(changed)await syncWithDrive({silent:true,reason:'remote-change'});else await updateSessionHeartbeat();await checkOtherActiveSessions()}catch(e){console.warn('Drive change check failed',e)}}
-async function updateSessionHeartbeat(){if(!sessionStorage.getItem('mobudGoogleToken'))return;const name=`${DRIVE_SESSION_PREFIX}${DEVICE_ID}.json`,existing=await findDriveFile(name);await uploadDriveJson(name,{deviceId:DEVICE_ID,deviceName:deviceLabel(),lastSeen:new Date().toISOString(),appVersion:VERSION},existing?.id||'')}
-function deviceLabel(){const ua=navigator.userAgent;return /Android/i.test(ua)?'Android device':/iPhone|iPad/i.test(ua)?'Apple device':/Windows/i.test(ua)?'Windows computer':/Mac/i.test(ua)?'Mac computer':'Other device'}
-let warnedSessionId='';
-async function checkOtherActiveSessions(){const files=await listDriveFiles(`name contains '${DRIVE_SESSION_PREFIX}' and 'appDataFolder' in parents and trashed=false`,'files(id,name,modifiedTime)');const cutoff=Date.now()-45000;const active=files.filter(f=>!f.name.includes(DEVICE_ID)&&Date.parse(f.modifiedTime||0)>cutoff).sort((a,b)=>Date.parse(b.modifiedTime)-Date.parse(a.modifiedTime))[0];if(active&&warnedSessionId!==active.id){warnedSessionId=active.id;otherDeviceText.textContent='Je info staat nog open op een ander apparaat. Sluit deze eerst af voor je hier verdergaat om dataconflicten te vermijden.';otherDeviceModal.classList.remove('hidden')}}
-function startDriveLoops(){stopDriveLoops();if(!state.settings.driveConnected||!sessionStorage.getItem('mobudGoogleToken'))return;drivePollTimer=setInterval(pollDriveChanges,15000);sessionHeartbeatTimer=setInterval(updateSessionHeartbeat,15000);pollDriveChanges()}
-function stopDriveLoops(){clearInterval(drivePollTimer);clearInterval(sessionHeartbeatTimer);drivePollTimer=sessionHeartbeatTimer=null}
-async function createManualDriveBackup(){if(!await ensureGoogleDriveToken({interactive:false})){toast(t('Re-link Google Drive to continue syncing.'));return}try{const stamp=new Date().toISOString().replaceAll(':','-').replaceAll('.','-');await uploadDriveJson(`${DRIVE_MANUAL_PREFIX}${stamp}.json`,buildBackupPayload());toast('Manual Drive backup created.')}catch(e){console.error(e);toast('Could not create the Drive backup.')}}
-async function importDriveBackup(){if(!await ensureGoogleDriveToken({interactive:false})){toast(t('Re-link Google Drive to continue syncing.'));return}try{const files=(await listDriveFiles(`name contains '${DRIVE_MANUAL_PREFIX}' and 'appDataFolder' in parents and trashed=false`)).sort((a,b)=>String(b.modifiedTime).localeCompare(String(a.modifiedTime)));if(!files.length){toast('No manual Drive backups found.');return}const selected=prompt(`Choose a backup number to merge:\n${files.slice(0,10).map((f,i)=>`${i+1}. ${new Date(f.modifiedTime).toLocaleString()}`).join('\n')}`,'1');if(!selected)return;const file=files[Number(selected)-1];if(!file){toast('Invalid backup selection.');return}const remote=await downloadDriveJson(file.id);snapshot(KEY,JSON.stringify(state),'before-manual-drive-import');state=mergeState(state,remote);state.settings.lastDriveSync=new Date().toLocaleString();save();toast('Backup imported and merged. Local and Drive data were combined.')}catch(e){console.error(e);toast('Could not import the Drive backup.')}}
+let pendingDriveAction=null;
+function requestDriveAccess(action){
+  if(!GOOGLE_CLIENT_ID){toast('Add the Google OAuth Client ID to config.js first.');return}
+  if(!window.google?.accounts?.oauth2){toast('Google sign-in is not ready yet. Reload and try again.');return}
+  pendingDriveAction=action;
+  const client=google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID,scope:'https://www.googleapis.com/auth/drive.appdata',callback:async token=>{
+    if(token.error||!token.access_token){pendingDriveAction=null;toast('Google Drive access was cancelled.');return}
+    sessionStorage.setItem('mobudGoogleToken',token.access_token);
+    try{await action()}finally{sessionStorage.removeItem('mobudGoogleToken');pendingDriveAction=null;renderSettings()}
+  }});
+  client.requestAccessToken({prompt:'consent'});
+}
+async function linkGoogleDrive(){return requestDriveAccess(createManualDriveBackupWithToken)}
+async function syncWithDrive(){toast('Automatic synchronisation is disabled. Use Backup maken or Backup importeren.');}
+
+function startDriveLoops(){/* Manual Drive mode: no polling, heartbeat or background sync. */}
+function stopDriveLoops(){clearTimeout(autoSyncTimer);clearInterval(drivePollTimer);clearInterval(sessionHeartbeatTimer);autoSyncTimer=drivePollTimer=sessionHeartbeatTimer=null}
+function backupSummary(data){const d=normalized(data);return `${d.vehicles.length} vehicle(s), ${d.trips.length} trip(s), ${d.expenses.length} cost(s)`}
+async function createManualDriveBackupWithToken(){
+  try{
+    toast('Preparing Google Drive backup…');
+    const existing=await findDriveFile(DRIVE_BACKUP_NAME);let merged=normalized(state);
+    if(existing){
+      const remote=await downloadDriveJson(existing.id);
+      if(!confirm(`Local: ${backupSummary(state)}\nDrive: ${backupSummary(remote)}\n\nMoBud will safely merge both datasets and then update the Drive backup. Continue?`)){toast('Backup cancelled.');return}
+      snapshot(KEY,JSON.stringify(state),'before-drive-backup-merge');merged=mergeState(state,remote);suppressAutoSync=true;state=merged;save({skipSync:true,preserveTimestamp:true});suppressAutoSync=false;
+      await uploadDriveJson(DRIVE_BACKUP_NAME,buildBackupPayload(),existing.id);
+    }else{
+      if(!confirm(`Create a Google Drive backup containing ${backupSummary(state)}?`)){toast('Backup cancelled.');return}
+      await uploadDriveJson(DRIVE_BACKUP_NAME,buildBackupPayload());
+    }
+    state.settings.lastDriveSync=new Date().toLocaleString();state.settings.driveConnected=false;state.settings.storageMode='local';save({skipSync:true,preserveTimestamp:true});
+    toast('Google Drive backup created. Temporary Drive access has ended.');
+  }catch(e){console.error(e);toast('Could not create the Drive backup. Your local data was kept.')}
+}
+function createManualDriveBackup(){requestDriveAccess(createManualDriveBackupWithToken)}
+async function importDriveBackupWithToken(){
+  try{
+    toast('Reading Google Drive backup…');let file=await findDriveFile(DRIVE_BACKUP_NAME);
+    if(!file){const files=(await listDriveFiles(`name contains '${DRIVE_MANUAL_PREFIX}' and 'appDataFolder' in parents and trashed=false`)).sort((a,b)=>String(b.modifiedTime).localeCompare(String(a.modifiedTime)));file=files[0]}
+    if(!file){toast('No Google Drive backup found.');return}
+    const remote=await downloadDriveJson(file.id);
+    const choice=prompt(`Local: ${backupSummary(state)}\nDrive backup (${new Date(file.modifiedTime).toLocaleString()}): ${backupSummary(remote)}\n\nType MERGE to safely merge, REPLACE to replace local data, or CANCEL.`, 'MERGE');
+    if(!choice||choice.trim().toUpperCase()==='CANCEL'){toast('Import cancelled.');return}
+    snapshot(KEY,JSON.stringify(state),'before-drive-import');
+    if(choice.trim().toUpperCase()==='REPLACE')state=normalized(remote);else if(choice.trim().toUpperCase()==='MERGE')state=mergeState(state,remote);else{toast('Unknown choice. Import cancelled.');return}
+    state.settings.lastDriveSync=new Date().toLocaleString();state.settings.driveConnected=false;state.settings.storageMode='local';save({skipSync:true});toast('Google Drive backup imported. Temporary Drive access has ended.');
+  }catch(e){console.error(e);toast('Could not import the Drive backup. Your local data was kept.')}
+}
+function importDriveBackup(){requestDriveAccess(importDriveBackupWithToken)}
 function openFeedback(type){feedbackForm.reset();feedbackType.value=type;feedbackTitle.textContent=type==='bug'?'Report bug':'Send request';feedbackModal.classList.remove('hidden')}
 function feedbackPayload(){return {type:feedbackType.value,title:feedbackSubject.value,description:feedbackDescription.value,severity:feedbackSeverity.value,email:feedbackEmail.value,mayContact:feedbackContact.checked,version:VERSION,platform:navigator.platform,installed:matchMedia('(display-mode: standalone)').matches,online:navigator.onLine}}
 
@@ -825,7 +888,7 @@ ${imported.vehicles.length} vehicles · ${imported.trips.length} trips · ${impo
 Profile/address data: ${profileSummary(raw)}
 
 Recommended: merge. Unique records are kept where possible.`;if(!confirm(preview+'\n\nMerge this backup with your local data?'))return;snapshot(KEY,JSON.stringify(state),'before-local-import');state=mergeLocalBackup(state,raw);save();toast(`Backup merged - ${state.vehicles.length} garage vehicle(s)`)}catch(err){console.error(err);toast('Invalid backup')}};r.readAsText(f)};printReport.onclick=printFilteredReport;exportPdf.onclick=exportPdfReport;
-linkDrive.onclick=linkGoogleDrive;syncDrive.onclick=()=>syncWithDrive({silent:false,reason:'manual'});driveBackupCreate.onclick=createManualDriveBackup;driveBackupImport.onclick=importDriveBackup;disconnectDrive.onclick=()=>{sessionStorage.removeItem('mobudGoogleToken');stopDriveLoops();state.settings.driveConnected=false;state.settings.storageMode='local';state.syncMeta.settingsUpdatedAt=new Date().toISOString();save({skipSync:true})};otherDeviceRecheck.onclick=async()=>{otherDeviceModal.classList.add('hidden');warnedSessionId='';await pollDriveChanges()};otherDeviceContinue.onclick=()=>{otherDeviceModal.classList.add('hidden');if(confirm('Wijzigingen op twee apparaten kunnen elkaar overschrijven. MoBud probeert conflicten te voorkomen, maar kan geen foutloze samenvoeging garanderen.'))toast('Je werkt verder op dit apparaat.')};document.getElementById('receiptCleanupDate')?.addEventListener('change',refreshReceiptCleanupPreview);document.getElementById('cleanupReceipts')?.addEventListener('click',cleanupOldReceiptAttachments);refreshReceiptCleanupPreview();checkUpdate.onclick=async()=>{const reg=await navigator.serviceWorker?.getRegistration();await reg?.update();toast(newWorker?'Update available':'You are using the latest loaded version')};replayTutorial.onclick=()=>startTutorial();requestBtn.onclick=()=>openFeedback('request');bugBtn.onclick=()=>openFeedback('bug');cancelFeedback.onclick=()=>feedbackModal.classList.add('hidden');feedbackForm.onsubmit=async e=>{e.preventDefault();if(!APP_CONFIG.SUPPORT_ENDPOINT_ENABLED){const p=feedbackPayload();navigator.clipboard?.writeText(JSON.stringify(p,null,2));toast('Support endpoint is not enabled yet; report copied to clipboard.');feedbackModal.classList.add('hidden');return}try{const r=await fetch(`${API}/support`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(feedbackPayload())});if(!r.ok)throw 0;toast('Report sent');feedbackModal.classList.add('hidden')}catch{toast('Could not send report')}};
+linkDrive.onclick=createManualDriveBackup;syncDrive.onclick=createManualDriveBackup;driveBackupCreate.onclick=createManualDriveBackup;driveBackupImport.onclick=importDriveBackup;disconnectDrive.onclick=()=>{sessionStorage.removeItem('mobudGoogleToken');sessionStorage.removeItem('mobudDriveReconnectNeeded');stopDriveLoops();state.settings.driveConnected=false;state.settings.storageMode='local';state.syncMeta.settingsUpdatedAt=new Date().toISOString();save({skipSync:true})};otherDeviceRecheck.onclick=async()=>{otherDeviceModal.classList.add('hidden');warnedSessionId='';await pollDriveChanges()};otherDeviceContinue.onclick=()=>{otherDeviceModal.classList.add('hidden');if(confirm('Wijzigingen op twee apparaten kunnen elkaar overschrijven. MoBud probeert conflicten te voorkomen, maar kan geen foutloze samenvoeging garanderen.'))toast('Je werkt verder op dit apparaat.')};document.getElementById('receiptCleanupDate')?.addEventListener('change',refreshReceiptCleanupPreview);document.getElementById('cleanupReceipts')?.addEventListener('click',cleanupOldReceiptAttachments);refreshReceiptCleanupPreview();checkUpdate.onclick=async()=>{const reg=await navigator.serviceWorker?.getRegistration();await reg?.update();toast(newWorker?'Update available':'You are using the latest loaded version')};replayTutorial.onclick=()=>startTutorial();requestBtn.onclick=()=>openFeedback('request');bugBtn.onclick=()=>openFeedback('bug');cancelFeedback.onclick=()=>feedbackModal.classList.add('hidden');feedbackForm.onsubmit=async e=>{e.preventDefault();if(!APP_CONFIG.SUPPORT_ENDPOINT_ENABLED){const p=feedbackPayload();navigator.clipboard?.writeText(JSON.stringify(p,null,2));toast('Support endpoint is not enabled yet; report copied to clipboard.');feedbackModal.classList.add('hidden');return}try{const r=await fetch(`${API}/support`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(feedbackPayload())});if(!r.ok)throw 0;toast('Report sent');feedbackModal.classList.add('hidden')}catch{toast('Could not send report')}};
 onboardAddVehicle.onclick=()=>openVehicle();onboardNext1.onclick=()=>{onboardingStep1.classList.add('hidden');onboardingStep2.classList.remove('hidden')};onboardBack2.onclick=()=>{onboardingStep2.classList.add('hidden');onboardingStep1.classList.remove('hidden')};onboardNext2.onclick=()=>{onboardingStep2.classList.add('hidden');onboardingStep3.classList.remove('hidden')};onboardBack3.onclick=()=>{onboardingStep3.classList.add('hidden');onboardingStep2.classList.remove('hidden')};finishOnboarding.onclick=finishOnboardingFlow;tutorialSkip.onclick=()=>tutorial.classList.add('hidden');tutorialNext.onclick=()=>{if(++tutorialIndex>=tutorialSteps.length){tutorial.classList.add('hidden');return}showTutorial()};
 const installBanner=document.getElementById('installBanner'),installNow=document.getElementById('installNow'),installLater=document.getElementById('installLater');
 function isInstalled(){return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}
@@ -839,8 +902,8 @@ if(isInstalled())hideInstallBanner();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./service-worker.js').then(reg=>{reg.addEventListener('updatefound',()=>{const w=reg.installing;w?.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller){newWorker=w;updateBanner.classList.remove('hidden')}})})});applyUpdate.onclick=async()=>{downloadBackup('before-update');if(!confirm('Een lokale veiligheidsbackup werd gestart. Update uitvoeren?')){toast('Update cancelled. Safety backup was downloaded.');return}toast('Updating MoBud…');await new Promise(r=>setTimeout(r,500));newWorker?.postMessage({type:'SKIP_WAITING'})};navigator.serviceWorker?.addEventListener('controllerchange',()=>location.reload());
 
 function handleLaunchAction(){const params=new URLSearchParams(location.search),raw=params.get('action')||location.hash.replace(/^#?/,'');if(!raw)return;if(raw==='add-trip'||raw==='log-trip'||raw==='trip'){setScreen('log');document.querySelector('[data-tab="trip"]')?.click()}else if(raw==='add-expense'||raw==='receipt'||raw==='expense'){setScreen('log');document.querySelector('[data-tab="expense"]')?.click()}else if(raw==='parking'){setScreen('garage');toast(t('Choose a vehicle and tap Save parking.'))}else if(raw==='reports'||raw==='report'){setScreen('stats')}}
-window.addEventListener('online',()=>toast(t('You are back online.')));window.addEventListener('offline',()=>toast(t('Offline mode active. You can keep logging; Drive sync and address search may be limited.')));
-tripDate.value=expenseDate.value=todayISO();onboardLanguage.value=state.settings.language||window.MOBUD_I18N?.language||'en';window.MOBUD_I18N?.setLanguage?.(state.settings.language||window.MOBUD_I18N?.language||'en');applyTheme();fillLocations({defaultFrom:'home1',defaultTo:'work'});tripFrom.value='home1';tripTo.value='work';renderDirectionLabels();render();const restoredScreen=(()=>{try{return sessionStorage.getItem(ACTIVE_SCREEN_KEY)||'dashboard'}catch{return 'dashboard'}})();setScreen(document.getElementById('screen-'+restoredScreen)?restoredScreen:'dashboard');if(versionGateRequired)showVersionSafetyGate();else checkCommuteReminder();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){if(versionGateRequired)showVersionSafetyGate();else checkCommuteReminder();if(state.settings.driveConnected){syncWithDrive({silent:true,reason:'resume'});if(sessionStorage.getItem('mobudGoogleToken'))startDriveLoops()}}else{scheduleAutoSync(0);stopDriveLoops()}});window.addEventListener('pagehide',()=>{scheduleAutoSync(0)});if(state.settings.driveConnected){syncWithDrive({silent:true,reason:'open'});if(sessionStorage.getItem('mobudGoogleToken'))startDriveLoops()}handleLaunchAction();if(!state.onboardingComplete)onboarding.classList.remove('hidden');
+window.addEventListener('online',()=>toast(t('You are back online.')));window.addEventListener('offline',()=>toast(t('Offline mode active. You can keep logging; Google Drive backup/import and address search may be limited.')));
+tripDate.value=expenseDate.value=todayISO();onboardLanguage.value=state.settings.language||window.MOBUD_I18N?.language||'en';window.MOBUD_I18N?.setLanguage?.(state.settings.language||window.MOBUD_I18N?.language||'en');applyTheme();fillLocations({defaultFrom:'home1',defaultTo:'work'});tripFrom.value='home1';tripTo.value='work';renderDirectionLabels();render();const restoredScreen=(()=>{try{return sessionStorage.getItem(ACTIVE_SCREEN_KEY)||'dashboard'}catch{return 'dashboard'}})();setScreen(document.getElementById('screen-'+restoredScreen)?restoredScreen:'dashboard');if(versionGateRequired)showVersionSafetyGate();else checkCommuteReminder();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){if(versionGateRequired)showVersionSafetyGate();else checkCommuteReminder()}});window.addEventListener('pagehide',stopDriveLoops);sessionStorage.removeItem('mobudGoogleToken');sessionStorage.removeItem('mobudDriveReconnectNeeded');state.settings.driveConnected=false;state.settings.storageMode='local';handleLaunchAction();if(!state.onboardingComplete)onboarding.classList.remove('hidden');
 
 async function fetchPartnerMetadata(urlInput,prefix){const url=urlInput.value.trim();if(!url){toast('Enter a website first.');return}try{toast('Looking up public contact details…');const r=await fetch(`${API}/metadata?url=${encodeURIComponent(url)}`);if(!r.ok)throw new Error();const d=await r.json();const map={seller:['vehicleBoughtFrom','vehicleSellerPhone','vehicleSellerAddress'],lease:['vehicleLeasePartner','vehicleLeasePhone','vehicleLeaseAddress'],maintenance:['vehicleMaintenanceProvider','vehicleMaintenanceContact','vehicleMaintenanceAddress'],insurance:['vehicleInsurance','vehicleInsurancePhone','vehicleInsuranceAddress']};const ids=map[prefix];if(d.name&&!document.getElementById(ids[0]).value)document.getElementById(ids[0]).value=d.name;if(d.phone&&!document.getElementById(ids[1]).value)document.getElementById(ids[1]).value=d.phone;if(d.address&&!document.getElementById(ids[2]).value)document.getElementById(ids[2]).value=d.address;toast(d.name||d.phone||d.address?'Public details added — please verify them.':'No public contact details found.')}catch{toast('Could not retrieve public contact details. You can enter them manually.')}}
 vehicleType.addEventListener('change',()=>updatePowertrainOptions(vehicleType.value));document.querySelectorAll('[data-fetch-partner]').forEach(b=>b.addEventListener('click',()=>fetchPartnerMetadata(document.getElementById(b.dataset.urlInput),b.dataset.fetchPartner)));
