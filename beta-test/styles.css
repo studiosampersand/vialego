@@ -613,12 +613,12 @@ html,body,button,input,select,textarea,a{font-family:Inter,ui-sans-serif,system-
 .vehicle-editor{width:min(760px,calc(100vw - 24px));padding:20px}.vehicle-editor .eyebrow,.vehicle-action-modal .eyebrow{display:block;color:var(--accent);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}.vehicle-editor-primary{display:grid;gap:12px}.optional-details{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}.optional-details>summary{display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;font-weight:900;list-style:none}.optional-details>summary::-webkit-details-marker,.optional-card>summary::-webkit-details-marker{display:none}.optional-details>summary small{color:var(--muted);font-weight:600;text-align:right}.optional-card-grid{display:grid;gap:10px;margin-top:12px}.optional-card{border:1px solid var(--line);border-radius:16px;background:var(--surface-2);overflow:hidden}.optional-card>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;cursor:pointer;list-style:none}.optional-card>summary span{font-weight:900;color:var(--text)}.optional-card>summary small{color:var(--muted);max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.optional-card[open]>summary{border-bottom:1px solid var(--line);background:transparent}.optional-card-body{display:grid;gap:12px;padding:15px}.sticky-modal-actions{position:sticky;bottom:-18px;background:linear-gradient(180deg,transparent 0,var(--surface) 25%);padding-top:24px;padding-bottom:4px;z-index:2}.action-partner{display:grid;gap:4px;padding:14px;border:1px solid rgba(255,157,28,.35);background:rgba(255,157,28,.08);border-radius:15px;margin:10px 0}.action-partner small{color:var(--muted)}.vehicle-ready-data{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.vehicle-ready-data>div{border:1px solid var(--line);background:var(--surface-2);border-radius:13px;padding:11px;min-width:0}.vehicle-ready-data small{display:block;color:var(--muted);font-size:11px}.vehicle-ready-data strong{display:block;margin-top:4px;overflow:hidden;text-overflow:ellipsis}.instruction-box{border-left:3px solid var(--accent);padding:10px 12px;background:var(--surface-2);border-radius:0 12px 12px 0;color:var(--muted);white-space:pre-wrap;margin:10px 0}.action-modal-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:14px}.action-modal-grid>*{min-height:48px}.vehicle-action-modal{max-width:620px}.garage-action-tile{min-height:54px}.garage-action-grid button{font:inherit}@media(max-width:620px){.vehicle-editor{padding:16px}.optional-details>summary{align-items:flex-start}.optional-details>summary small{max-width:50%}.vehicle-ready-data,.action-modal-grid{grid-template-columns:1fr}.sticky-modal-actions{bottom:-16px}}
 
 
-/* v0.000.028 garage accordion polish */
+/* v0.000.030 garage accordion and update-flow polish */
 .optional-card>summary{align-items:center;min-height:72px}
 .optional-card-heading{display:grid;gap:5px;min-width:0;flex:1}
 .optional-card-title{font-weight:900;color:var(--text);line-height:1.2}
-.optional-card-summary{display:flex!important;align-items:center;gap:8px;max-width:100%!important;color:var(--muted);font-weight:650;white-space:nowrap;overflow:hidden;min-width:0}
-.partner-summary-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.optional-card-summary{display:flex!important;align-items:center;gap:8px;max-width:100%!important;color:var(--muted);font-weight:400;white-space:nowrap;overflow:hidden;min-width:0}
+.partner-summary-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-weight:400}
 .partner-summary-icons{display:inline-flex;align-items:center;gap:5px;flex:0 0 auto}
 .partner-summary-icon{display:inline-flex;width:14px;height:14px;color:var(--muted);opacity:.82}
 .partner-summary-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -629,3 +629,6 @@ html,body,button,input,select,textarea,a{font-family:Inter,ui-sans-serif,system-
 .garage-toggle-chevron.is-up{transform:rotate(225deg);margin-top:7px;margin-bottom:0}
 .garage-more-toggle .chevron{color:var(--accent)}
 @media(max-width:620px){.optional-card>summary{min-height:68px;padding:13px 14px}.optional-card-summary{font-size:.82rem}.partner-summary-icons{gap:4px}}
+
+/* The single version-safety modal is the only update prompt. */
+#updateBanner{display:none!important}
