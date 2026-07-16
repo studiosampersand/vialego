@@ -5,13 +5,25 @@
       "nl": "Synchroniseert MoBud automatisch met Google Drive?",
       "en": "Does MoBud sync automatically with Google Drive?",
       "fr": "MoBud se synchronise-t-il automatiquement avec Google Drive ?",
-      "de": "Synchronisiert MoBud automatisch mit Google Drive?"
+      "de": "Synchronisiert MoBud automatisch mit Google Drive?",
+      "es": "¿MoBud se sincroniza automáticamente con Google Drive?",
+      "it": "MoBud si sincronizza automaticamente con Google Drive?",
+      "pt": "O MoBud sincroniza automaticamente com o Google Drive?",
+      "sv": "Synkroniserar MoBud automatiskt med Google Drive?",
+      "no": "Synkroniserer MoBud automatisk med Google Drive?",
+      "da": "Synkroniserer MoBud automatisk med Google Drive?"
     },
     "answer": {
       "nl": "Nee. MoBud bewaart je gegevens lokaal. Je kiest zelf wanneer je een Google Drive-back-up maakt of importeert. Dit beperkt langdurige accounttoegang en voorkomt dat een tijdelijke Drive-fout je lokale gegevens beïnvloedt.",
-      "en": "No. MoBud stores your data locally. You choose when to create or import a Google Drive backup.",
+      "en": "No. MoBud stores your data locally. You choose when to create or import a Google Drive backup. This limits long-lived account access and prevents a temporary Drive error from affecting local data.",
       "fr": "Non. MoBud conserve vos données localement. Vous choisissez quand créer ou importer une sauvegarde Google Drive.",
-      "de": "Nein. MoBud speichert deine Daten lokal. Du entscheidest, wann du ein Google-Drive-Backup erstellst oder importierst."
+      "de": "Nein. MoBud speichert deine Daten lokal. Du entscheidest, wann du ein Google-Drive-Backup erstellst oder importierst.",
+      "es": "No. MoBud guarda tus datos localmente. Tú decides cuándo crear o importar una copia de Google Drive. Esto limita el acceso prolongado a tu cuenta y evita que un error temporal de Drive afecte a tus datos locales.",
+      "it": "No. MoBud salva i dati localmente. Decidi tu quando creare o importare un backup di Google Drive. Questo limita l’accesso prolungato all’account e impedisce che un errore temporaneo di Drive influisca sui dati locali.",
+      "pt": "Não. O MoBud guarda os dados localmente. Decide quando criar ou importar uma cópia do Google Drive. Isto limita o acesso prolongado à conta e evita que um erro temporário do Drive afete os dados locais.",
+      "sv": "Nej. MoBud lagrar dina data lokalt. Du väljer själv när du skapar eller importerar en Google Drive-backup. Det begränsar långvarig kontoåtkomst och hindrar tillfälliga Drive-fel från att påverka lokala data.",
+      "no": "Nei. MoBud lagrer dataene lokalt. Du velger selv når du oppretter eller importerer en Google Drive-backup. Dette begrenser langvarig kontotilgang og hindrer midlertidige Drive-feil i å påvirke lokale data.",
+      "da": "Nej. MoBud gemmer dine data lokalt. Du vælger selv, hvornår du opretter eller importerer en Google Drive-backup. Det begrænser langvarig kontoadgang og forhindrer midlertidige Drive-fejl i at påvirke lokale data."
     }
   },
   {
@@ -23,10 +35,10 @@
       "de": "Warum muss ich mich für ein Drive-Backup erneut anmelden?"
     },
     "answer": {
-      "nl": "MoBud houdt bewust geen permanente Google Drive-sessie actief. Je verleent alleen tijdelijk toegang wanneer je zelf op ‘Back-up maken’ of ‘Back-up importeren’ drukt. Na de handeling blijft MoBud lokaal werken.",
-      "en": "MoBud deliberately keeps no permanent Google Drive session. Access is temporary and only requested for Backup or Import.",
-      "fr": "MoBud ne maintient aucune session Google Drive permanente. L’accès est temporaire lors d’une sauvegarde ou d’un import.",
-      "de": "MoBud hält keine dauerhafte Google-Drive-Sitzung offen. Zugriff wird nur vorübergehend für Backup oder Import angefordert."
+      "nl": "MoBud houdt bewust geen permanente Google Drive-sessie actief. Je verleent alleen tijdelijk toegang wanneer je zelf op ‘Back-up maken’ of ‘Back-up importeren’ drukt. Na de handeling blijft MoBud volledig lokaal werken.",
+      "en": "MoBud deliberately keeps no permanent Google Drive session. Access is temporary and only requested when you choose Backup or Import. Afterward MoBud continues locally.",
+      "fr": "MoBud ne maintient volontairement aucune session Google Drive permanente. L’accès est temporaire lors d’une sauvegarde ou d’un import.",
+      "de": "MoBud hält bewusst keine dauerhafte Google-Drive-Sitzung offen. Zugriff wird nur vorübergehend für Backup oder Import angefordert."
     }
   },
   {
@@ -38,10 +50,10 @@
       "de": "Was passiert bei Änderungen auf mehreren Geräten?"
     },
     "answer": {
-      "nl": "Bij een Drive-back-up of import vergelijkt MoBud de lokale gegevens met de Drive-versie. Nieuwe records worden behouden en recente wijzigingen worden samengevoegd waar mogelijk. Je krijgt eerst een overzicht.",
-      "en": "During backup or import, MoBud compares local data with the Drive version and merges records where possible.",
-      "fr": "MoBud compare les données locales à la version Drive et les fusionne lorsque possible.",
-      "de": "MoBud vergleicht lokale Daten mit der Drive-Version und führt sie soweit möglich zusammen."
+      "nl": "Bij een Drive-back-up of import vergelijkt MoBud de lokale gegevens met de Drive-versie. Nieuwe records worden behouden en recente wijzigingen worden samengevoegd waar mogelijk. Je krijgt eerst een overzicht voordat lokale gegevens worden aangepast.",
+      "en": "During backup or import, MoBud compares local data with the Drive version. Unique records are retained and recent changes are merged where possible. A preview is shown before local data changes.",
+      "fr": "Lors d’une sauvegarde ou d’un import, MoBud compare les données locales à la version Drive et les fusionne lorsque possible.",
+      "de": "Bei Backup oder Import vergleicht MoBud lokale Daten mit der Drive-Version und führt sie soweit möglich zusammen."
     }
   },
   {
@@ -85,15 +97,15 @@
       "da": "Hvad er MoBud?"
     },
     "answer": {
-      "en": "MoBud is a free, local-first mobility administration app. It helps you track rides, commutes, vehicle costs, receipts, maintenance and monthly reports without requiring an account or subscription. MoBud is a project by Studio Sampersand, a Belgian solo developer studio.",
-      "nl": "MoBud is een gratis, lokale app voor mobiliteitsadministratie. Je houdt er ritten, woon-werkverkeer, voertuigkosten, bonnetjes, onderhoud en maandrapporten mee bij zonder account of abonnement. MoBud is een project van Studio Sampersand, een Belgische solo-developer.",
-      "fr": "MoBud est une application gratuite et locale d’administration de mobilité. Elle vous aide à suivre les trajets, les déplacements domicile-travail, les frais de véhicule, les reçus, l’entretien et les rapports mensuels sans compte ni abonnement. MoBud est un projet de Studio Sampersand, un studio belge de développement solo.",
-      "es": "MoBud es una app gratuita y local para la administración de movilidad. Te ayuda a registrar trayectos, desplazamientos al trabajo, costes de vehículos, recibos, mantenimiento e informes mensuales sin cuenta ni suscripción. MoBud es un proyecto de Studio Sampersand, un estudio belga de desarrollo independiente.",
-      "it": "MoBud è un’app gratuita e local-first per l’amministrazione della mobilità. Ti aiuta a registrare tragitti, pendolarismo, costi dei veicoli, ricevute, manutenzione e report mensili senza account o abbonamento. MoBud è un progetto di Studio Sampersand, uno studio belga di sviluppo indipendente.",
-      "pt": "O MoBud é uma aplicação gratuita e local-first para administração de mobilidade. Ajuda a registar viagens, deslocações, custos de veículos, recibos, manutenção e relatórios mensais sem conta nem subscrição. O MoBud é um projeto da Studio Sampersand, um estúdio belga de desenvolvimento independente.",
-      "sv": "MoBud är en gratis, local-first app för mobilitetsadministration. Den hjälper dig att logga resor, pendling, fordonskostnader, kvitton, underhåll och månadsrapporter utan konto eller abonnemang. MoBud är ett projekt av Studio Sampersand, en belgisk soloutvecklare.",
-      "no": "MoBud er en gratis, local-first app for mobilitetsadministrasjon. Den hjelper deg å loggføre turer, pendling, kjøretøykostnader, kvitteringer, vedlikehold og månedsrapporter uten konto eller abonnement. MoBud er et prosjekt fra Studio Sampersand, en belgisk soloutvikler.",
-      "da": "MoBud er en gratis, local-first app til mobilitetsadministration. Den hjælper dig med at registrere ture, pendling, køretøjsomkostninger, kvitteringer, vedligehold og månedsrapporter uden konto eller abonnement. MoBud er et projekt fra Studio Sampersand, en belgisk soloudvikler."
+      "en": "MoBud is a free, local-first mobility administration app. It helps you track rides, commutes, vehicle costs, receipts, maintenance and monthly reports without requiring an account or subscription.",
+      "nl": "MoBud is een gratis, lokale app voor mobiliteitsadministratie. Je houdt er ritten, woon-werkverkeer, voertuigkosten, bonnetjes, onderhoud en maandrapporten mee bij zonder account of abonnement.",
+      "fr": "MoBud est une application gratuite et locale d’administration de mobilité. Elle vous aide à suivre les trajets, les déplacements domicile-travail, les frais de véhicule, les reçus, l’entretien et les rapports mensuels sans compte ni abonnement.",
+      "es": "MoBud es una app gratuita y local para la administración de movilidad. Te ayuda a registrar trayectos, desplazamientos al trabajo, costes de vehículos, recibos, mantenimiento e informes mensuales sin cuenta ni suscripción.",
+      "it": "MoBud è un’app gratuita e local-first per l’amministrazione della mobilità. Ti aiuta a registrare tragitti, pendolarismo, costi dei veicoli, ricevute, manutenzione e report mensili senza account o abbonamento.",
+      "pt": "O MoBud é uma aplicação gratuita e local-first para administração de mobilidade. Ajuda a registar viagens, deslocações, custos de veículos, recibos, manutenção e relatórios mensais sem conta nem subscrição.",
+      "sv": "MoBud är en gratis, local-first app för mobilitetsadministration. Den hjälper dig att logga resor, pendling, fordonskostnader, kvitton, underhåll och månadsrapporter utan konto eller abonnemang.",
+      "no": "MoBud er en gratis, local-first app for mobilitetsadministrasjon. Den hjelper deg å loggføre turer, pendling, kjøretøykostnader, kvitteringer, vedlikehold og månedsrapporter uten konto eller abonnement.",
+      "da": "MoBud er en gratis, local-first app til mobilitetsadministration. Den hjælper dig med at registrere ture, pendling, køretøjsomkostninger, kvitteringer, vedligehold og månedsrapporter uden konto eller abonnement."
     }
   },
   {
@@ -770,32 +782,6 @@
       "sv": "Ja. Öppna Inställningar eller FAQ/hjälp och välj att spela upp handledningen igen när du vill ha guidning.",
       "no": "Ja. Åpne Innstillinger eller FAQ/hjelp og velg å spille av veiledningen igjen når du vil ha en omvisning.",
       "da": "Ja. Åbn Indstillinger eller FAQ/hjælp og vælg at afspille guiden igen, når du vil have en rundvisning."
-    }
-  },
-  {
-    "id": "move-to-new-phone",
-    "category": "backups",
-    "question": {
-      "en": "How do I move MoBud to a new phone?",
-      "nl": "Hoe verhuis ik MoBud naar een nieuwe telefoon?",
-      "fr": "Comment déplacer MoBud vers un nouveau téléphone ?",
-      "es": "¿Cómo muevo MoBud a un teléfono nuevo?",
-      "it": "Come sposto MoBud su un nuovo telefono?",
-      "pt": "Como mudo o MoBud para um novo telemóvel?",
-      "sv": "Hur flyttar jag MoBud till en ny telefon?",
-      "no": "Hvordan flytter jeg MoBud til en ny telefon?",
-      "da": "Hvordan flytter jeg MoBud til en ny telefon?"
-    },
-    "answer": {
-      "en": "Open <strong>Settings → Storage & Google Drive</strong> on your old phone and export a local data backup. Open MoBud on the new phone, go to the same section and import that backup. If you use Google Drive, link Drive again afterwards so future changes can sync and merge where possible.",
-      "nl": "Open <strong>Instellingen → Opslag & Google Drive</strong> op je oude telefoon en exporteer een lokale gegevensbackup. Open MoBud op je nieuwe telefoon, ga naar dezelfde sectie en importeer die backup. Gebruik je Google Drive, koppel Drive daarna opnieuw zodat toekomstige wijzigingen kunnen synchroniseren en waar mogelijk worden samengevoegd.",
-      "fr": "Ouvrez <strong>Réglages → Stockage et Google Drive</strong> sur l’ancien téléphone et exportez une sauvegarde locale. Ouvrez MoBud sur le nouveau téléphone, allez dans la même section et importez cette sauvegarde. Si vous utilisez Google Drive, reconnectez Drive ensuite pour synchroniser et fusionner les changements lorsque possible.",
-      "es": "Abre <strong>Ajustes → Almacenamiento y Google Drive</strong> en el teléfono antiguo y exporta una copia local. Abre MoBud en el nuevo teléfono, ve a la misma sección e importa esa copia. Si usas Google Drive, vuelve a vincular Drive después para sincronizar y fusionar cambios cuando sea posible.",
-      "it": "Apri <strong>Impostazioni → Archiviazione e Google Drive</strong> sul vecchio telefono ed esporta un backup locale. Apri MoBud sul nuovo telefono, vai nella stessa sezione e importa quel backup. Se usi Google Drive, ricollega Drive dopo per sincronizzare e unire le modifiche quando possibile.",
-      "pt": "Abra <strong>Definições → Armazenamento e Google Drive</strong> no telemóvel antigo e exporte uma cópia local. Abra o MoBud no novo telemóvel, vá à mesma secção e importe essa cópia. Se usar Google Drive, volte a ligar o Drive depois para sincronizar e combinar alterações quando possível.",
-      "sv": "Öppna <strong>Inställningar → Lagring och Google Drive</strong> på den gamla telefonen och exportera en lokal backup. Öppna MoBud på den nya telefonen, gå till samma avsnitt och importera backupen. Om du använder Google Drive, koppla Drive igen efteråt så att ändringar kan synkas och slås ihop där det är möjligt.",
-      "no": "Åpne <strong>Innstillinger → Lagring og Google Drive</strong> på den gamle telefonen og eksporter en lokal backup. Åpne MoBud på den nye telefonen, gå til samme seksjon og importer backupen. Hvis du bruker Google Drive, kobler du Drive til på nytt etterpå slik at endringer kan synkroniseres og slås sammen der det er mulig.",
-      "da": "Åbn <strong>Indstillinger → Lagring og Google Drive</strong> på den gamle telefon og eksportér en lokal backup. Åbn MoBud på den nye telefon, gå til samme sektion og importér backupen. Hvis du bruger Google Drive, skal du forbinde Drive igen bagefter, så ændringer kan synkroniseres og flettes, hvor det er muligt."
     }
   }
 ]
